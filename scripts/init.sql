@@ -9,7 +9,7 @@ create table usuario (
     nome varchar(60) not null,
     email varchar(100) not null UNIQUE,
     sexo varchar(20) null,
-    nascimento date null,
+    nascimento date nu ll,
     pais varchar(40) null,
     estado varchar(40) null,
     password varchar(60) null,

@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
         table.text("nome").notNull();
         table.text("email").notNull().unique();
         table.text("password").notNull();
+        table.text("foto");
         table.text("sexo");
         table.text("pais");
         table.date("nascimento");

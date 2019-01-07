@@ -24,7 +24,7 @@ module.exports = {
   connection: {
     database: "sauce_meme",
     user: "postgres",
-    password: "senhabrasil123",
+    password: "Sparda11",
     port: env.port
   }
 };
