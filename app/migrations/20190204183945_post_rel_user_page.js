@@ -15,7 +15,7 @@ exports.up = function(knex, Promise) {
       .unsigned()
       .index()
       .references("id")
-      .inTable("post")
+    .inTable("post")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
     table.timestamp("created_at").defaultTo(knex.fn.now());

@@ -279,7 +279,10 @@ module.exports = app => {
     let userPageResult = [];
     let a = 0;
     let sqlQueryLike =
-      "SELECT post.titulo, post.descricao, post.midia FROM post INNER JOIN post_rel_user_page ON post.id = post_rel_user_page.id_post INNER JOIN post_rel_keywords ON post_rel_user_page.id_post = post_rel_keywords.id_post INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id ";
+      "SELECT post_rel_user_page.id_user_page, post.titulo, post.descricao, post.midia FROM post " +
+      "INNER JOIN post_rel_user_page ON post.id = post_rel_user_page.id_post "+
+      "INNER JOIN post_rel_keywords ON post_rel_user_page.id_post = post_rel_keywords.id_post " +
+      "INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id ";
 
     a = 0;
 
@@ -303,7 +306,10 @@ module.exports = app => {
         } else {
           a = 0;
           sqlQueryLike =
-            "SELECT post.titulo, post.descricao, post.midia FROM post INNER JOIN post_rel_user_page ON post.id = post_rel_user_page.id_post INNER JOIN post_rel_keywords ON post_rel_user_page.id_post = post_rel_keywords.id_post INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id WHERE keywords.keyword ";
+            "SELECT post_rel_user_page.id_user_page, post.titulo, post.descricao, post.midia FROM post " +
+            "INNER JOIN post_rel_user_page ON post.id = post_rel_user_page.id_post "+
+            "INNER JOIN post_rel_keywords ON post_rel_user_page.id_post = post_rel_keywords.id_post " +
+            "INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id WHERE keywords.keyword ";
           while (a < arrayWithWords.length) {
             if (a == 0) {
               sqlQueryLike += ` ILIKE '%${arrayWithWords[a]}%'`;
@@ -334,7 +340,10 @@ module.exports = app => {
     /* MEME PAGE */
     let memePageResult = [];
     sqlQueryLike =
-      "SELECT post.titulo, post.descricao, post.midia FROM post INNER JOIN post_rel_meme_page ON post.id = post_rel_meme_page.id_post INNER JOIN post_rel_keywords ON post_rel_meme_page.id_post = post_rel_keywords.id_post INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id ";
+      "SELECT post.titulo, post.descricao, post.midia FROM post " +
+      "INNER JOIN post_rel_meme_page ON post.id = post_rel_meme_page.id_post "+
+      "INNER JOIN post_rel_keywords ON post_rel_meme_page.id_post = post_rel_keywords.id_post "+
+      "INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id ";
 
     a = 0;
     sqlQueryLike += "WHERE keywords.keyword IN (";
@@ -357,7 +366,10 @@ module.exports = app => {
         } else {
           a = 0;
           sqlQueryLike =
-            "SELECT post.titulo, post.descricao, post.midia FROM post INNER JOIN post_rel_meme_page ON post.id = post_rel_meme_page.id_post INNER JOIN post_rel_keywords ON post_rel_meme_page.id_post = post_rel_keywords.id_post INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id WHERE keywords.keyword ";
+            "SELECT post.titulo, post.descricao, post.midia FROM post " +
+            "INNER JOIN post_rel_meme_page ON post.id = post_rel_meme_page.id_post "+
+            "INNER JOIN post_rel_keywords ON post_rel_meme_page.id_post = post_rel_keywords.id_post "+
+            "INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id WHERE keywords.keyword ";
           while (a < arrayWithWords.length) {
             if (a == 0) {
               sqlQueryLike += ` ILIKE '%${arrayWithWords[a]}%'`;
@@ -385,10 +397,13 @@ module.exports = app => {
 
     /*====*/
 
-    /* USER PAGE */
+    /* USER */
     let userResult = [];
     sqlQueryLike =
-      "SELECT post.titulo, post.descricao, post.midia FROM post INNER JOIN post_rel_user ON post.id = post_rel_user.id_post INNER JOIN post_rel_keywords ON post_rel_user.id_post = post_rel_keywords.id_post INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id ";
+      "SELECT post_rel_user.id_user, post.titulo, post.descricao, post.midia FROM post " +
+      "INNER JOIN post_rel_user ON post.id = post_rel_user.id_post " +
+      "INNER JOIN post_rel_keywords ON post_rel_user.id_post = post_rel_keywords.id_post " +
+      "INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id ";
 
     a = 0;
     sqlQueryLike += "WHERE keywords.keyword IN (";
@@ -411,10 +426,14 @@ module.exports = app => {
         } else {
           a = 0;
           sqlQueryLike =
-            "SELECT post.titulo, post.descricao, post.midia FROM post INNER JOIN post_rel_meme_page ON post.id = post_rel_meme_page.id_post INNER JOIN post_rel_keywords ON post_rel_meme_page.id_post = post_rel_keywords.id_post INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id WHERE keywords.keyword ";
+          "SELECT post_rel_user.id_user, post.titulo, post.descricao, post.midia FROM post " +
+          "INNER JOIN post_rel_user ON post.id = post_rel_user.id_post " +
+          "INNER JOIN post_rel_keywords ON post_rel_user.id_post = post_rel_keywords.id_post " +
+          "INNER JOIN keywords ON post_rel_keywords.id_keywords = keywords.id WHERE keywords.keyword ";
+            
           while (a < arrayWithWords.length) {
             if (a == 0) {
-              sqlQueryLike += ` ILIKE '%${arrayWithWords[a]}%'`;
+              sqlQueryLike += ` ILIKE '${arrayWithWords[a]}%'`;
             } else {
               sqlQueryLike += `OR keywords.keyword ILIKE '%${
                 arrayWithWords[a]
