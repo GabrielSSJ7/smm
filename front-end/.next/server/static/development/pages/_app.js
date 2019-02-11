@@ -115,7 +115,9 @@ var INITIAL_STATE = {
   nome: "",
   email: "",
   password: "",
-  result: ""
+  result: "",
+  show: false,
+  nick: ""
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_STATE;
@@ -150,12 +152,29 @@ var INITIAL_STATE = {
 
     case _types__WEBPACK_IMPORTED_MODULE_0__["actionTypes"].LOGIN_SUCESSO:
       return _objectSpread({}, state, {
-        result: action.payload
+        result: action.payload,
+        show: action.show
       });
 
     case _types__WEBPACK_IMPORTED_MODULE_0__["actionTypes"].LOGIN_ERRO:
       return _objectSpread({}, state, {
         result: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_0__["actionTypes"].LOGIN_FACEBOOK_SUCESSO:
+      return _objectSpread({}, state, {
+        show: action.show
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_0__["actionTypes"].MUDA_NICKNAME:
+      return _objectSpread({}, state, {
+        nick: action.payload,
+        result: action.result
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_0__["actionTypes"].TEM_APELIDO_SUCESSO:
+      return _objectSpread({}, state, {
+        show: action.payload
       });
 
     case _types__WEBPACK_IMPORTED_MODULE_0__["actionTypes"].TICK:
@@ -229,7 +248,10 @@ var actionTypes = {
   CADASTRADO_SUCESSO: "CADASTRADO_SUCESSO",
   CADASTRADO_ERRO: "cadastro_erro",
   LOGIN_SUCESSO: "LOGIN_SUCESSO",
-  LOGIN_ERRO: "LOGIN_ERRO"
+  LOGIN_ERRO: "LOGIN_ERRO",
+  LOGIN_FACEBOOK_SUCESSO: "LOGIN_FACEBOOK_SUCESSO",
+  MUDA_NICKNAME: "muda_nickname",
+  TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO"
 };
 var FACEBOOK_PROFILE_PIC_URL = function FACEBOOK_PROFILE_PIC_URL(userId) {
   return "https://graph.facebook.com/".concat(userId, "/picture?type=large");

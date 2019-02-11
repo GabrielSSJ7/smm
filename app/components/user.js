@@ -17,7 +17,6 @@ module.exports = app => {
 
   const signin = (req, res) => {
     const user = { ...req.body };
-    console.log(user);
 
     try {
       existsOrError(user.nome, "Nome não informado.");
@@ -140,14 +139,84 @@ module.exports = app => {
       });
   };
 
+  const buscaApelido = async (req, res) => {
+    const user = req.params.nickname || null;
+    console.log(user);
+    app
+      .db("usuario")
+      .where({
+        nick: user
+      })
+      .then(nick => {
+        console.log(nick.length)
+        if (nick.length > 0) {
+          return res.status(200).send("Apelido já está sendo usado");
+        } else {
+          return res.status(200).send("Apelido disponível");
+        }
+      });
+  };
+
+  const temApelido = (req, res) => {
+    const userData = req.body || null;
+
+    try {
+      if (userData) {
+        const token = jwt.decode(userData.token, authSecret);
+
+        app
+          .db("usuario")
+          .where({
+            email: token.email
+          })
+          .then(user => {
+            if (!user[0].nick) {
+              res.status(200).send(false);
+            } else {
+              res.status(200).send(true);
+            }
+          });
+      }
+    } catch (e) {
+      // problema com o token
+    }
+  };
+
+  const adicionaApelido = (req, res) => {
+    const nick = req.body.nick || null;
+    let token = req.body.token || null;
+
+    if (!nick) {
+      console.log(nick);
+      return res.status(400).send("Apelido não foi enviado");
+    }
+
+    token = jwt.decode(token, authSecret);
+
+    app
+      .db("usuario")
+      .where({
+        email: token.email
+      })
+      .update({
+        nick
+      })
+      .then(_ => {
+        return res.status(200).send(true);
+      })
+      .catch(_ => {
+        console.log(_);
+        return;
+      });
+  };
+
   const validateToken = async (req, res) => {
     const userData = req.body || null;
 
     try {
       if (userData) {
         const token = jwt.decode(userData.token, authSecret);
-        //console.log(Math.floor(Date.now() / 1000))
-        //console.log(new Date())
+
         if (new Date(token.exp * 1000) > new Date()) {
           return res.send(true);
         }
@@ -159,5 +228,13 @@ module.exports = app => {
     res.send(false);
   };
 
-  return { signin, login, validateToken, signinWithFacebook };
+  return {
+    signin,
+    login,
+    validateToken,
+    signinWithFacebook,
+    buscaApelido,
+    temApelido,
+    adicionaApelido
+  };
 };

@@ -7,9 +7,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
     "axios": "^0.18.0",
     "next": "latest",
+    "next-images": "^1.0.4",
     "react": "^16.7.0",
+    "react-bootstrap": "^0.32.4",
     "react-dom": "^16.7.0",
     "react-redux": "^5.0.1",
     "redux": "^3.6.0",

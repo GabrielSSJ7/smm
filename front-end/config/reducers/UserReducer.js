@@ -7,7 +7,9 @@ const INITIAL_STATE = {
   nome: "",
   email: "",
   password: "",
-  result: ""
+  result: "",
+  show: false,
+  nick: ""
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -29,10 +31,19 @@ export default (state = INITIAL_STATE, action) => {
     return { ...state, result: action.payload }
 
     case actionTypes.LOGIN_SUCESSO:
-    return { ...state, result: action.payload }
+    return { ...state, result: action.payload, show: action.show }
 
     case actionTypes.LOGIN_ERRO:
     return { ...state, result: action.payload }
+
+    case actionTypes.LOGIN_FACEBOOK_SUCESSO:
+    return { ...state, show: action.show }
+
+    case actionTypes.MUDA_NICKNAME:
+    return { ...state, nick: action.payload, result: action.result }
+
+    case actionTypes.TEM_APELIDO_SUCESSO:
+    return { ...state, show: action.payload }
 
     case actionTypes.TICK:
       return Object.assign({}, state, {

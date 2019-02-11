@@ -1,0 +1,24 @@
+
+.index-test-buttons {
+    border: 1px solid tan;
+    background-color: aquamarine;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.index-test-buttons:hover {
+    border: 1px solid black;
+    background-color: tomato;
+    
+}
+
+.index-test-buttons:hover p {
+    color: aliceblue;
+}
+
+.index-test-buttons img {
+    width: 50%;
+}
+
+/*# sourceMappingURL=styles.chunk.css.map*/

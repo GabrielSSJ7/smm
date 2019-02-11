@@ -15,6 +15,50 @@ export const mudaEmail = texto => {
   };
 };
 
+export const mudaNickName = texto => {
+  if (texto.length > 0) {
+    return dispatch => {
+      Axios.get(`${actionTypes.URL}buscaapelido/${texto}`).then(res => {
+        console.log(res);
+        dispatch({
+          type: actionTypes.MUDA_NICKNAME,
+          payload: texto,
+          result: res.data
+        });
+      });
+    };
+  } else {
+    return {
+      type: actionTypes.MUDA_NICKNAME,
+      payload: texto,
+      result: ""
+    };
+  }
+};
+
+export const cadastrarApelido = nick => {
+  const instance = Axios.create({
+    headers: { Authorization: `bearer ${localStorage.getItem("authToken")}` }
+  });
+
+  return dispatch => {
+    instance
+      .post(`${actionTypes.URL}adicionaapelido`, {
+        nick,
+        token: localStorage.getItem("authToken")
+      })
+      .then(res => {
+        console.log(res)
+        if (res.data) {
+          dispatch({
+            type: ""
+          });
+          Router.push("/");
+        }
+      });
+  };
+};
+
 export const mudaSenha = texto => {
   return {
     type: actionTypes.MUDA_SENHA,
@@ -22,11 +66,34 @@ export const mudaSenha = texto => {
   };
 };
 
+export const temApelido = () => {
+  return dispatch => {
+    const instance = Axios.create({
+      headers: {
+        Authorization: `bearer ${localStorage.getItem("authToken")}`
+      }
+    });
+
+    instance
+      .post(`${actionTypes.URL}temapelido`, {
+        token: localStorage.getItem("authToken")
+      })
+      .then(res => {
+        if (res.data) {
+          dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: false });
+          Router.push("/");
+        } else {
+          dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: true });
+          Router.push("/Apelido");
+        }
+      });
+  };
+};
+
 export const cadastrar = data => {
   return dispatch => {
     Axios.post(`${actionTypes.URL}signin`, data)
       .then(res => {
-        console.log(res);
         if (res.data) {
           dispatch(cadastroSucesso());
         } else {
@@ -40,6 +107,7 @@ export const cadastrar = data => {
 };
 
 const cadastroSucesso = () => {
+  Router.push("/Login");
   return {
     type: actionTypes.CADASTRADO_SUCESSO,
     payload: true
@@ -57,7 +125,6 @@ export const entrar = data => {
   return dispatch => {
     Axios.post(`${actionTypes.URL}login`, data)
       .then(res => {
-        console.log(res);
         if (res.data) {
           localStorage.setItem("authToken", res.data.token);
 
@@ -79,7 +146,8 @@ export const entrar = data => {
 const loginSucesso = () => {
   return {
     type: actionTypes.LOGIN_SUCESSO,
-    payload: true
+    payload: true,
+    show: true
   };
 };
 
@@ -115,7 +183,7 @@ export const loginWithFacebook = () => {
                   res.data.token
                 }`; // for all requests
 
-                Router.push("/");
+                //Router.push("/");
               })
               .catch(err => {
                 console.log(err);
@@ -131,7 +199,10 @@ export const loginWithFacebook = () => {
 };
 
 const loginFacebookSucesso = () => {
+  
+  Router.push("/");
   return {
-    type: "face"
+    type: actionTypes.LOGIN_FACEBOOK_SUCESSO
+    // show: true
   };
 };
