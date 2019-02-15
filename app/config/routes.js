@@ -13,11 +13,15 @@ module.exports = app =>
     app.route("/createnewuserpage").all(app.config.passport.authenticate()).post(app.components.pages.createNewUserPage);
     app.route("/createpost").all(app.config.passport.authenticate()).post(app.components.post.createPost);
 
+    app.route("/createpostuser").all(app.config.passport.authenticate()).post(app.components.post.createPostUser);
+    app.route("/createpostuserpage").all(app.config.passport.authenticate()).post(app.components.post.createPostUserPage);
+    app.route("/createpostmemepage").all(app.config.passport.authenticate()).post(app.components.post.createPostMemePage);
+
     app.route("/results").get(app.components.pages.searchMemePage);
     app.route("/resultsup").get(app.components.pages.searchUserPage);
     app.route("/searchPage").post(app.components.post.searchByPage);
 
-    app.route("/searchBar").get(app.components.post.searchBar);
+    app.route("/searchBar").post(app.components.post.searchBar);
 
     app.route("/searchadminforpage").all(app.config.passport.authenticate()).get(app.components.pages.searchUsersForAdminPage);
 }

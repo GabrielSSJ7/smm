@@ -22,6 +22,7 @@ module.exports = app => {
       existsOrError(user.nome, "Nome não informado.");
       existsOrError(user.email, "E-mail não informado.");
       existsOrError(user.password, "Senha não informada.");
+      existsOrError(user.nick, "Você não informou o apelido");
       validateEmail(user.email, "O e-mail especificado é inválido.");
     } catch (msg) {
       return res.status(400).send(msg);

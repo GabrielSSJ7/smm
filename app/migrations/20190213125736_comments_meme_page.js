@@ -1,5 +1,5 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable("vote", table => {
+  return knex.schema.createTable("comments_meme_page", table => {
     table.increments("id").primary();
     table
       .bigInteger("id_user")
@@ -8,22 +8,23 @@ exports.up = function(knex, Promise) {
       .references("id")
       .inTable("usuario")
       .onDelete("CASCADE")
-      .onUpdate("CASCADE")
-      .unique();
-      table
+      .onUpdate("CASCADE");
+
+    table
       .bigInteger("id_post")
       .unsigned()
       .index()
       .references("id")
-      .inTable("post").onDelete('CASCADE').onUpdate('CASCADE')
-      .unique();
-      table.integer("up");
-      table.integer("down");
-      table.timestamp("created_at").defaultTo(knex.fn.now());
+      .inTable("post_meme_page")
+      .onDelete("CASCADE")
+      .onUpdate("CASCADE");
+
+    table.text("comment");
+    table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("update_at").defaultTo(knex.fn.now());
   });
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema.dropTable("vote");
+  return knex.schema.dropTableIfExists("comments_meme_page");
 };

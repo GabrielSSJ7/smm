@@ -1,0 +1,85 @@
+<?php include('server.php');
+
+		if (empty($_SESSION['username'])) {
+			header('location: login.php');
+		}
+
+		 ?>
+	  <!DOCTYPE html>
+	  <html lang="pt-br">
+		 <head>
+			    <title>Home page</title>
+			    <meta charset="utf-8">
+			    <link rel="stylesheet" type="text/css" href="./css/div.css">
+				<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+				<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+				<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+				<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  $("switch").mouseClick(function() {
+    var p = $("p").css("background-color", "yellow");
+    
+  });
+});
+</script>
+
+ 		</head> 
+
+
+ <style>
+  	
+ 
+
+
+
+
+  </style>
+
+	   
+
+	   <body  style="background-color:">
+
+	   		<!--       CODIGO PHP     -->
+		   	<div class="content">
+		   		<?php if (isset($_SESSION['success'])): ?>
+		   		<div class="error success">
+		   			<h3>
+		   				<?php
+		   				  echo $_SESSION['success'];
+		   				  unset($_SESSION['success']);
+		   				?>
+		   			</h3>
+		   		</div>
+		   	<?php endif ?>
+
+
+		   <!--                     MENU TOP                     -->
+
+		   <div class="container-fluid" style="background-color: grey">
+
+		   		<?php if (isset($_SESSION["username"])): ?>
+		   		<p>Welcome <strong><?php echo $_SESSION['username']; ?></strong></p>
+		   		<p><a href="index.php?logout='1'" style="color: red">Logout</a></p>
+		   		<?php endif ?>
+
+		   	</div>
+
+		   		
+		   	
+		   		<label class="switch" style="background-color: ">
+		   			<p>
+	            		<input type="checkbox">
+	            			<span class="slider"></span>
+	            	</p>
+	        	</label>
+	        
+
+	      </div>
+	       				 
+	    		 
+	   		  
+
+	    
+	  </body>
+	  </html>

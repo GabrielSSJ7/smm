@@ -132,7 +132,7 @@ module.exports = app => {
     return res.status(200).send(true);
   };
 
-  /* CRIA PÁGINA DO MEME */
+  /* CRIA USER PAGE */
   createNewUserPage = async (req, res) => {
     const data = req.body || null;
     const token = jwt.decode(data.token, authSecret);
@@ -234,19 +234,24 @@ module.exports = app => {
         });
     }
 
-    for (let c = 0; c < data.id_administrators.length; c++) {
-      await app
-        .db("user_page_administrators")
-        .insert({
-          id_user_page,
-          id_user_admin: data.id_administrators[c]
-        })
-        .then(id => {
-          id_administrators.push(id[0]);
-        })
-        .catch(err => {
-          return res.status(400).send(err);
-        });
+    if (
+      Array.isArray(data.id_administrators) &&
+      data.id_administrators.length === 0
+    ) {
+      for (let c = 0; c < data.id_administrators.length; c++) {
+        await app
+          .db("user_page_administrators")
+          .insert({
+            id_user_page,
+            id_user_admin: data.id_administrators[c]
+          })
+          .then(id => {
+            id_administrators.push(id[0]);
+          })
+          .catch(err => {
+            return res.status(400).send(err);
+          });
+      }
     }
 
     return res.status(200).send(true);
