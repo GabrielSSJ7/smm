@@ -9,6 +9,7 @@ export const actionTypes = {
   URL: "http://localhost:4000/",
   CADASTRADO_SUCESSO: "CADASTRADO_SUCESSO",
   CADASTRADO_ERRO: "cadastro_erro",
+  CADASTRO_APELIDO: "cadastro_apelido",
   LOGIN_SUCESSO: "LOGIN_SUCESSO",
   LOGIN_ERRO: "LOGIN_ERRO",
   LOGIN_FACEBOOK_SUCESSO: "LOGIN_FACEBOOK_SUCESSO",

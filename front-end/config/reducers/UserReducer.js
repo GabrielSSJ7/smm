@@ -8,12 +8,13 @@ const INITIAL_STATE = {
   email: "",
   password: "",
   result: "",
+  resultNick: "",
   show: false,
   nick: ""
 };
 
 export default (state = INITIAL_STATE, action) => {
-  console.log(action)
+
   switch (action.type) {
     case actionTypes.MUDA_NOME:
     return { ...state, nome: action.payload }
@@ -40,7 +41,10 @@ export default (state = INITIAL_STATE, action) => {
     return { ...state, show: action.show }
 
     case actionTypes.MUDA_NICKNAME:
-    return { ...state, nick: action.payload, result: action.result }
+    return { ...state, nick: action.payload, resultNick: action.result }
+
+    case actionTypes.CADASTRO_APELIDO:
+    return { ...state, show: false }
 
     case actionTypes.TEM_APELIDO_SUCESSO:
     return { ...state, show: action.payload }

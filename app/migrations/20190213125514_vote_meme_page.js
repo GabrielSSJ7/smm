@@ -8,8 +8,7 @@ exports.up = function(knex, Promise) {
         .references("id")
         .inTable("usuario")
         .onDelete("CASCADE")
-        .onUpdate("CASCADE")
-        .unique();
+        .onUpdate("CASCADE");
         table
         .bigInteger("id_post")
         .unsigned()

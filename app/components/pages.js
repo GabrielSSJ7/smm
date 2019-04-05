@@ -436,11 +436,77 @@ module.exports = app => {
       });
   };
 
+  follow = async (req, res) => {
+    const option = req.query.option || null;
+    const token = jwt.decode(
+      req.get("Authorization").replace("bearer ", ""),
+      authSecret
+    );
+    const id_page = req.body.id_page || null;
+    let table = "";
+    switch (option) {
+      case "up":
+        table = "subscribe_user_page";
+        break;
+
+      case "m":
+        table = "subscribe_meme_page";
+        break;
+    }
+
+    const alreadyFollow = await app.db(table).where({
+      id_user: token.id,
+      id_page
+    });
+
+    if (alreadyFollow.length <= 0) {
+      console.log("follow");
+      app
+        .db(table)
+        .insert({ id_user: token.id, id_page })
+        .then(_ => {
+          return res.sendStatus(200);
+        })
+        .catch(error => {
+          return res.status(500).send(error);
+        });
+    } else {
+      console.log("unfollow");
+      app
+        .db(table)
+        .where({ id_user: token.id, id_page })
+        .del()
+        .then(_ => {
+          return res.sendStatus(200);
+        })
+        .catch(error => {
+          return res.status(500).send(error);
+        });
+    }
+  };
+
+  getAllSubscribers = async (req, res) => {
+    const option = req.query.option || null;
+    const id_page = req.query.id_page || null;
+    
+
+    if (id_page == null || option == null) return res.sendStatus(400);
+
+    const result = await app.db
+      .raw(`SELECT usuario.nick, usuario.foto FROM subscribe_meme_page 
+    JOIN usuario ON subscribe_meme_page.id_user = usuario.id
+    WHERE id_page = ${id_page};`);
+
+    return res.json(result.rows);
+  };
+
   return {
     createNewMemePage,
     searchMemePage,
     searchUserPage,
     createNewUserPage,
-    searchUsersForAdminPage
+    searchUsersForAdminPage,
+    follow,
+    getAllSubscribers
   };
 };

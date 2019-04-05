@@ -11,11 +11,19 @@ module.exports = app =>
 
     app.route("/createnewmemepage").all(app.config.passport.authenticate()).post(app.components.pages.createNewMemePage);
     app.route("/createnewuserpage").all(app.config.passport.authenticate()).post(app.components.pages.createNewUserPage);
-    app.route("/createpost").all(app.config.passport.authenticate()).post(app.components.post.createPost);
+    app.route("/subscribe").all(app.config.passport.authenticate()).post(app.components.pages.follow);
+    app.route("/getallsubscribers").all(app.config.passport.authenticate()).get(app.components.pages.getAllSubscribers);
+    //app.route("/createpost").all(app.config.passport.authenticate()).post(app.components.post.createPost);
 
     app.route("/createpostuser").all(app.config.passport.authenticate()).post(app.components.post.createPostUser);
     app.route("/createpostuserpage").all(app.config.passport.authenticate()).post(app.components.post.createPostUserPage);
     app.route("/createpostmemepage").all(app.config.passport.authenticate()).post(app.components.post.createPostMemePage);
+
+    app.route("/updownvote").all(app.config.passport.authenticate()).post(app.components.post.upDownVotePost);
+    app.route("/comment").all(app.config.passport.authenticate()).post(app.components.post.insertUpdateDeleteComment);
+    app.route("/view").all(app.config.passport.authenticate()).post(app.components.post.viewPost);
+    app.route("/allviews").all(app.config.passport.authenticate()).get(app.components.post.allViewsOfPost);
+    app.route("/postdetails").all(app.config.passport.authenticate()).get(app.components.post.postDetails);
 
     app.route("/results").get(app.components.pages.searchMemePage);
     app.route("/resultsup").get(app.components.pages.searchUserPage);

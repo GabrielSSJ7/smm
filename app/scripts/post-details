@@ -1,0 +1,3 @@
+SELECT post_meme_page.created_at, post_meme_page.titulo, post_meme_page.midia from post_meme_page WHERE id_post = 6;
+SELECT categoria from categorias_post_meme_page WHERE id_post = 6;
+SELECT count(vote_meme_page.up) as upvotes, count(view_meme_page.down) as downvotes FROM view_meme_page WHERE id_post = 6;

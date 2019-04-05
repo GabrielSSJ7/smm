@@ -30,175 +30,6 @@ module.exports = app => {
       WHERE keywords.keyword IN ('Tossindo')
   */
 
-  /* CRIA PÁGINA DO MEME
-   *
-   *     titulo ""
-   *     descricao ""
-   *     midia ""
-   *     token ""
-   *     page_type ""
-   *     page_id number
-   *     categorias []
-   *     keywords []
-   *
-   */
-  createPost = async (req, res) => {
-    const data = req.body || null;
-    const token = jwt.decode(data.token, authSecret);
-    const page_type = data.page_type;
-    const page_id = data.page_id;
-    delete data.token;
-    delete data.page_type;
-    delete data.page_id;
-
-    let ids_categoria = [];
-    let ids_keywords = [];
-    let id_post = 0;
-
-    try {
-      existsOrError(
-        data.titulo,
-        "Você precisa digitar um titulo para publicar"
-      );
-      existsOrError(data.midia, "É necessário o vídeo ou foto para publicar");
-      existsOrError(
-        data.categorias,
-        "Você precisa escolher uma categoria no mínimo."
-      );
-      existsOrError(
-        data.keywords,
-        "Você precisa digitar no mínimo uma keyword"
-      );
-      existsOrError(token, "Ocorreu um problema, tente novamente mais tarde.");
-    } catch (error) {
-      return res.status(400).send(error);
-    }
-
-    await app
-      .db("post")
-      .returning("id")
-      .insert({
-        titulo: data.titulo,
-        descricao: data.descricao ? data.descricao : null,
-        midia: data.midia,
-        id_criador: token.id
-      })
-      .then(id => {
-        id_post = id[0];
-      })
-      .catch(err => {
-        return res.status(400).send(err);
-      });
-
-    for (let i = 0; i < data.categorias.length; i++) {
-      await app
-        .db("categorias")
-        .returning("id")
-        .insert({
-          categoria: data.categorias[i]
-        })
-        .then(id => {
-          ids_categoria.push(id[0]);
-        })
-        .catch(err => {
-          return res.status(400).send(err);
-        });
-    }
-
-    for (let a = 0; a < data.keywords.length; a++) {
-      await app
-        .db("keywords")
-        .returning("id")
-        .insert({
-          keyword: data.keywords[a]
-        })
-        .then(id => {
-          ids_keywords.push(id[0]);
-        })
-        .catch(err => {
-          return res.status(400).send(err);
-        });
-    }
-
-    for (let b = 0; b < ids_categoria.length; b++) {
-      await app
-        .db("post_rel_categorias")
-        .insert({
-          id_post,
-          id_categorias: ids_categoria[b]
-        })
-        .then(id => {
-          //ids_keywords.push(id[0]);
-        })
-        .catch(err => {
-          return res.status(400).send(err);
-        });
-    }
-
-    for (let c = 0; c < ids_keywords.length; c++) {
-      await app
-        .db("post_rel_keywords")
-        .insert({
-          id_post,
-          id_keywords: ids_keywords[c]
-        })
-        .then(id => {
-          //ids_keywords.push(id[0]);
-        })
-        .catch(err => {
-          return res.status(400).send(err);
-        });
-    }
-
-    switch (page_type) {
-      case "user_page":
-        await app
-          .db("post_rel_user_page")
-          .insert({
-            id_post,
-            id_user_page: page_id
-          })
-          .then(id => {
-            //ids_keywords.push(id[0]);
-          })
-          .catch(err => {
-            return res.status(400).send(err);
-          });
-        break;
-
-      case "meme_page":
-        await app
-          .db("post_rel_meme_page")
-          .insert({
-            id_post,
-            id_meme_page: page_id
-          })
-          .then(id => {
-            //ids_keywords.push(id[0]);
-          })
-          .catch(err => {
-            return res.status(400).send(err);
-          });
-        break;
-
-      default:
-        await app
-          .db("post_rel_user")
-          .insert({
-            id_post,
-            id_user: token.id
-          })
-          .then(id => {
-            //ids_keywords.push(id[0]);
-          })
-          .catch(err => {
-            return res.status(400).send(err);
-          });
-        break;
-    }
-    return res.status(200).send(true);
-  };
-
   /* CREATE POST USER
    *
    *     titulo ""
@@ -213,7 +44,13 @@ module.exports = app => {
     const data = req.body || null;
     const token = jwt.decode(data.token, authSecret);
 
+    let arrayWithWords = data.titulo.match(/\S+/g);
+    console.log(arrayWithWords);
     let id_post = 0;
+
+    data.keywords = data.keywords.concat(arrayWithWords);
+
+    console.log(data.keywords);
 
     try {
       existsOrError(
@@ -296,7 +133,13 @@ module.exports = app => {
     const data = req.body || null;
     const token = jwt.decode(data.token, authSecret);
 
+    let arrayWithWords = data.titulo.match(/\S+/g);
+    console.log(arrayWithWords);
     let id_post = 0;
+
+    data.keywords = data.keywords.concat(arrayWithWords);
+
+    console.log(data.keywords);
 
     try {
       existsOrError(
@@ -380,7 +223,13 @@ module.exports = app => {
     const data = req.body || null;
     const token = jwt.decode(data.token, authSecret);
 
+    let arrayWithWords = data.titulo.match(/\S+/g);
+    console.log(arrayWithWords);
     let id_post = 0;
+
+    data.keywords = data.keywords.concat(arrayWithWords);
+
+    console.log(data.keywords);
 
     try {
       existsOrError(
@@ -450,25 +299,32 @@ module.exports = app => {
 
   /* BUSCAR POST PELAS PÁGINAS
    *
-   *  page_type
-   *  page_id
+   *  page_type (meme_page, user_page, user) -> string
+   *  page_id -> int
+   *  orderby -> (upvote, created_at) string
+   *  desc_asc -> (desc, asc) string
    *
    */
 
   searchByPage = async (req, res) => {
     const data = req.body || null;
+    const order = req.body.order || null;
+    const desc_asc = req.body.desc_asc || null;
+
     let sql = "";
     switch (data.page_type) {
       case "meme_page":
-        sql =
-          "SELECT * FROM post " +
-          "INNER JOIN post_rel_meme_page ON post.id = post_rel_meme_page.id_post " +
-          "WHERE id_meme_page = " +
-          data.page_id;
+        sql = `SELECT DISTINCT 
+        post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, post_meme_page.created_at,
+        count(vote_meme_page.up) as upvote, count(vote_meme_page.down) as downvote
+        FROM post_meme_page JOIN vote_meme_page ON post_meme_page.id = vote_meme_page.id_post WHERE id_meme_page = ${
+          data.page_id
+        }
+        GROUP BY post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, post_meme_page.created_at
+        ORDER BY ${order} ${desc_asc}`;
         app.db
           .raw(sql)
           .then(result => {
-            console.log(result.rows);
             return res.json(result.rows);
           })
           .catch(erro => {
@@ -477,15 +333,17 @@ module.exports = app => {
         break;
 
       case "user_page":
-        sql =
-          "SELECT * FROM post " +
-          "INNER JOIN post_rel_user_page ON post.id = post_rel_user_page.id_post " +
-          "WHERE id_user_page = " +
-          data.page_id;
+        sql = `SELECT DISTINCT 
+        post_user_page.titulo, post_user_page.descricao, post_user_page.midia, post_user_page.created_at,
+        count(vote_user_page.up) as upvote, count(vote_user_page.down) as downvote
+        FROM post_user_page JOIN vote_user_page ON post_user_page.id = vote_user_page.id_post WHERE id_user_page = ${
+          data.page_id
+        }
+        GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.midia, post_user_page.created_at
+        ORDER BY ${order} ${desc_asc}`;
         app.db
           .raw(sql)
           .then(result => {
-            console.log(result.rows);
             return res.json(result.rows);
           })
           .catch(erro => {
@@ -494,15 +352,18 @@ module.exports = app => {
         break;
 
       case "user":
-        sql =
-          "SELECT * FROM post " +
-          "INNER JOIN post_rel_user ON post.id = post_rel_user.id_post " +
-          "WHERE id_user = " +
-          data.page_id;
+        sql = `SELECT DISTINCT 
+        post_user.titulo, post_user.descricao, post_user.midia, post_user.created_at,
+        count(vote_user.up) as upvote, count(vote_user.down) as downvote
+        FROM post_user JOIN vote_user ON post_user.id = vote_user.id_post WHERE id_criador = ${
+          data.page_id
+        }
+        GROUP BY post_user.titulo, post_user.descricao, post_user.midi
+        a, post_user.created_at
+        ORDER BY ${order} ${desc_asc}`;
         app.db
           .raw(sql)
           .then(result => {
-            console.log(result.rows);
             return res.json(result.rows);
           })
           .catch(erro => {
@@ -522,7 +383,7 @@ module.exports = app => {
   searchBar = async (req, res) => {
     const searchWords = req.query.search_query || null;
 
-    const order = req.body || null;
+    const order = req.body.order || null;
     let orderBy = "";
 
     let arrayWithWords = searchWords.split(/(?= )/);
@@ -544,66 +405,62 @@ module.exports = app => {
     /* USER PAGE */
     let userPageResult = [];
     let a = 0;
-    let sqlQueryLike =
+    let sqlUserPageQuery =
       "SELECT DISTINCT post_user_page.titulo, post_user_page.descricao, post_user_page.midia,  " +
-      "count(up) as upvote, count(down) as downvote FROM post_user_page   " +
+      "count(up) as upvote, count(down) as downvote, post_user_page.created_at FROM post_user_page   " +
       "full JOIN user_page ON post_user_page.id_user_page = user_page.id  " +
       "full JOIN keywords_post_user_page ON post_user_page.id = keywords_post_user_page.id_post " +
       "full JOIN vote_user_page ON post_user_page.id = vote_user_page.id_post  ";
     a = 0;
-    sqlQueryLike += "WHERE keywords_post_user_page.keyword IN (";
+
+    let sqlUserPageQueryWhere = "WHERE keywords_post_user_page.keyword IN (";
+
     while (a < arrayWithWords.length) {
       if (a == arrayWithWords.length - 1) {
-        sqlQueryLike += `'${arrayWithWords[a]}'`;
+        sqlUserPageQueryWhere += `'${arrayWithWords[a]}'`;
       } else {
-        sqlQueryLike += `'${arrayWithWords[a]}',`;
+        sqlUserPageQueryWhere += `'${arrayWithWords[a]}',`;
       }
       a++;
     }
 
-    sqlQueryLike += ")";
+    sqlUserPageQueryWhere += ")";
 
-    sqlQueryLike +=
-      " GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.midia, keywords_post_user_page.keyword " +
+    sqlUserPageQueryWhere +=
+      " GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at " +
       orderBy;
-
-    console.log("*********************************************");
-    console.log(sqlQueryLike);
     await app.db
-      .raw(sqlQueryLike)
+      .raw(sqlUserPageQuery + sqlUserPageQueryWhere)
       .then(async result => {
         if (result.rows.length > 0) {
+          result.rows.forEach(element => {
+            return (element.type = "up");
+          });
           userPageResult = result.rows;
         } else {
           a = 0;
-          sqlQueryLike =
-            "SELECT DISTINCT post_user_page.titulo, post_user_page.descricao, post_user_page.midia,  " +
-            "count(up) as upvote, count(down) as downvote FROM post_user_page   " +
-            "full JOIN user_page ON post_user_page.id_user_page = user_page.id  " +
-            "full JOIN keywords_post_user_page ON post_user_page.id = keywords_post_user_page.id_post " +
-            "full JOIN vote_user_page ON post_user_page.id = vote_user_page.id_post  " +
-            "WHERE keywords_post_user_page.keyword ";
+          sqlUserPageQueryWhere = "WHERE keywords_post_user_page.keyword ";
 
           while (a < arrayWithWords.length) {
             if (a == 0) {
-              sqlQueryLike += ` ILIKE '${arrayWithWords[a]}%'`;
+              sqlUserPageQueryWhere += ` ILIKE '${arrayWithWords[a]}%'`;
             } else {
-              sqlQueryLike += `OR keywords_post_user_page.keyword ILIKE '${
+              sqlUserPageQueryWhere += `OR keywords_post_user_page.keyword ILIKE '${
                 arrayWithWords[a]
               }%'`;
             }
             a++;
           }
 
-          sqlQueryLike +=
-            " GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.midia, keywords_post_user_page.keyword " +
+          sqlUserPageQueryWhere +=
+            " GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at " +
             orderBy;
-
-          console.log("*********************************************");
-          console.log(sqlQueryLike);
           await app.db
-            .raw(sqlQueryLike)
+            .raw(sqlUserPageQuery + sqlUserPageQueryWhere)
             .then(result => {
+              result.rows.forEach(element => {
+                return (element.type = "up");
+              });
               userPageResult = result.rows;
             })
             .catch(erro => {
@@ -619,66 +476,59 @@ module.exports = app => {
 
     /* MEME PAGE */
     let memePageResult = [];
-    sqlQueryLike =
-      "SELECT DISTINCT post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia,  " +
-      "count(up) as upvote, count(down) as downvote FROM post_meme_page   " +
+
+    let sqlMemeQuery =
+      "SELECT DISTINCT post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, post_meme_page.id_meme_page, " +
+      "count(up) as upvote, count(down) as downvote, post_meme_page.created_at FROM post_meme_page   " +
       "full JOIN meme_page ON post_meme_page.id_meme_page = meme_page.id  " +
       "full JOIN keywords_post_meme_page ON post_meme_page.id = keywords_post_meme_page.id_post " +
       "full JOIN vote_meme_page ON post_meme_page.id = vote_meme_page.id_post  ";
-
     a = 0;
-    sqlQueryLike += "WHERE keywords_post_meme_page.keyword IN (";
+    let sqlMemeQueryWhere = "WHERE keywords_post_meme_page.keyword IN (";
     while (a < arrayWithWords.length) {
       if (a == arrayWithWords.length - 1) {
-        sqlQueryLike += `'${arrayWithWords[a]}'`;
+        sqlMemeQueryWhere += `'${arrayWithWords[a]}'`;
       } else {
-        sqlQueryLike += `'${arrayWithWords[a]}',`;
+        sqlMemeQueryWhere += `'${arrayWithWords[a]}',`;
       }
       a++;
     }
-
-    sqlQueryLike += ") ";
-
-    sqlQueryLike +=
-      " GROUP BY post_meme_page.id_meme_page, post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword " +
+    sqlMemeQueryWhere += ") ";
+    sqlMemeQueryWhere +=
+      " GROUP BY post_meme_page.id_meme_page, post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword,post_meme_page.created_at " +
       orderBy;
-
-    console.log("*********************************************");
-    console.log(sqlQueryLike);
     await app.db
-      .raw(sqlQueryLike)
+      .raw(sqlMemeQuery + sqlMemeQueryWhere)
       .then(async result => {
         if (result.rows.length > 0) {
+          result.rows.forEach(element => {
+            return (element.type = "m");
+          });
+
           memePageResult = result.rows;
         } else {
           a = 0;
-          sqlQueryLike =
-            "SELECT DISTINCT post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia,  " +
-            "count(up) as upvote, count(down) as downvote FROM post_meme_page   " +
-            "full JOIN meme_page ON post_meme_page.id_meme_page = meme_page.id  " +
-            "full JOIN keywords_post_meme_page ON post_meme_page.id = keywords_post_meme_page.id_post " +
-            "full JOIN vote_meme_page ON post_meme_page.id = vote_meme_page.id_post  " +
-            "WHERE keywords_post_meme_page.keyword ";
-
+          sqlMemeQueryWhere = "WHERE keywords_post_meme_page.keyword";
           while (a < arrayWithWords.length) {
             if (a == 0) {
-              sqlQueryLike += ` ILIKE '${arrayWithWords[a]}%'`;
+              sqlMemeQueryWhere += ` ILIKE '${arrayWithWords[a]}%'`;
             } else {
-              sqlQueryLike += `OR keywords.keyword ILIKE '${
+              sqlMemeQueryWhere += `OR keywords.keyword ILIKE '${
                 arrayWithWords[a]
               }%'`;
             }
             a++;
           }
-          sqlQueryLike +=
-            " GROUP BY post_meme_page.id_meme_page, post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword " +
+          sqlMemeQueryWhere +=
+            " GROUP BY post_meme_page.id_meme_page, post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword, post_meme_page.created_at " +
             orderBy;
-
-          console.log("*********************************************");
-          console.log(sqlQueryLike);
           await app.db
-            .raw(sqlQueryLike)
+            .raw(sqlMemeQuery + sqlMemeQueryWhere)
             .then(result => {
+              result.rows.forEach(element => {
+                return (element.type = "m");
+              });
+
               memePageResult = result.rows;
             })
             .catch(erro => {
@@ -693,67 +543,59 @@ module.exports = app => {
     /*====*/
 
     /* USER */
-    let userResult = [];
-    sqlQueryLike =
+    let sqlUserQuery =
       "SELECT DISTINCT post_user.titulo, post_user.descricao, post_user.midia, " +
-      "count(up) as upvote, count(down) as downvote FROM post_user " +
+      "count(up) as upvote, count(down) as downvote, post_user.created_at FROM post_user " +
       "full JOIN usuario ON post_user.id_criador = usuario.id " +
       "full JOIN keywords_post_user ON post_user.id = keywords_post_user.id_post " +
       "full JOIN vote_user ON post_user.id = vote_user.id_post ";
-
+    let userResult = [];
     a = 0;
-    sqlQueryLike += "WHERE keywords_post_user.keyword IN (";
+    let sqlUserQueryWhere = "WHERE keywords_post_user.keyword IN (";
     while (a < arrayWithWords.length) {
       if (a == arrayWithWords.length - 1) {
-        sqlQueryLike += `'${arrayWithWords[a]}'`;
+        sqlUserQueryWhere += `'${arrayWithWords[a]}'`;
       } else {
-        sqlQueryLike += `'${arrayWithWords[a]}',`;
+        sqlUserQueryWhere += `'${arrayWithWords[a]}',`;
       }
       a++;
     }
 
-    sqlQueryLike += ") ";
-    sqlQueryLike +=
-      " GROUP BY post_user.titulo, post_user.descricao, post_user.midia, keywords_post_user.keyword " +
+    sqlUserQueryWhere += ") ";
+    sqlUserQueryWhere +=
+      " GROUP BY post_user.titulo, post_user.descricao, post_user.midia, keywords_post_user.keyword, post_user.created_at " +
       orderBy;
-
-    console.log("*********************************************");
-    console.log(sqlQueryLike);
     await app.db
-      .raw(sqlQueryLike)
+      .raw(sqlUserQuery + sqlUserQueryWhere)
       .then(async result => {
         if (result.rows.length > 0) {
+          result.rows.forEach(element => {
+            return (element.type = "u");
+          });
           userResult = result.rows;
         } else {
           a = 0;
-          sqlQueryLike =
-            "SELECT DISTINCT post_user.titulo, post_user.descricao, post_user.midia, " +
-            "count(up) as upvote, count(down) as downvote FROM post_user " +
-            "full JOIN usuario ON post_user.id_criador = usuario.id " +
-            "full JOIN keywords_post_user ON post_user.id = keywords_post_user.id_post " +
-            "full JOIN vote_user ON post_user.id = vote_user.id_post " +
-            "WHERE keywords_post_user.keyword ";
-
+          sqlUserQueryWhere = " WHERE keywords_post_user.keyword";
           while (a < arrayWithWords.length) {
             if (a == 0) {
-              sqlQueryLike += ` ILIKE '${arrayWithWords[a]}%'`;
+              sqlUserQueryWhere += ` ILIKE '${arrayWithWords[a]}%'`;
             } else {
-              sqlQueryLike += `OR keywords_post_user.keyword ILIKE '${
+              sqlUserQueryWhere += `OR keywords_post_user.keyword ILIKE '${
                 arrayWithWords[a]
               }%'`;
             }
             a++;
           }
 
-          sqlQueryLike +=
-            " GROUP BY post_user.titulo, post_user.descricao, post_user.midia, keywords_post_user.keyword " +
+          sqlUserQueryWhere +=
+            " GROUP BY post_user.titulo, post_user.descricao, post_user.midia, keywords_post_user.keyword, post_user.created_at " +
             orderBy;
-
-          console.log("*********************************************");
-          console.log(sqlQueryLike);
           await app.db
-            .raw(sqlQueryLike)
+            .raw(sqlUserQuery + sqlUserQueryWhere)
             .then(result => {
+              result.rows.forEach(element => {
+                return (element.type = "u");
+              });
               userResult = result.rows;
             })
             .catch(erro => {
@@ -766,36 +608,382 @@ module.exports = app => {
       });
 
     /* ------- */
-
-    /*console.log("*********************************************");
-    console.log(userResult);
-    console.log("*********************************************");
-    console.log(userPageResult);
-    console.log("*********************************************");
-    console.log(memePageResult);
-    console.log("*********************************************");*/
-
     var arrayMerged = memePageResult.concat(userPageResult, userResult);
-    
-    let orderedArray = [];
-    let oldElement = {};
-      arrayMerged.map((elem) => {
-        if(elem.upvote > oldElement) {}
-        
-        
-      })
+
+    console.log(order);
+
+    switch (order) {
+      case "upvote":
+        console.log("***ORDENANDO POR UPVOTES***");
+        arrayMerged.sort(function(a, b) {
+          return b.upvote.localeCompare(a.upvote);
+        });
+        break;
+
+      case "new":
+        console.log("***ORDENANDO PELA DATA***");
+        arrayMerged.sort(function(a, b) {
+          return new Date(b.created_at) - new Date(a.created_at);
+        });
+        break;
+
+      default:
+        console.log("***ORDENANDO POR UPVOTES default***");
+        arrayMerged.sort(function(a, b) {
+          return b.upvote.localeCompare(a.upvote);
+        });
+        break;
+    }
+
+    //console.log(arrayMerged);
 
     res.json(arrayMerged);
 
     //return res.send(w);
   };
 
+  /*
+   * UP OR DOWN VOTE
+   * Corpo da requisição
+   *
+   * token in header - Authorization bearer token
+   * id_post -> int
+   * type ('m','u','up') -> string
+   * vote ('up', 'down') -> string
+   *
+   */
+  upDownVotePost = async (req, res) => {
+    const data = req.body || null;
+    const token = jwt.decode(
+      req.get("Authorization").replace("bearer ", ""),
+      authSecret
+    );
+    switch (data.type) {
+      case "m":
+        doUpOrDown("vote_meme_page", data, res, token);
+        break;
+
+      case "u":
+        doUpOrDown("vote_user", data, res, token);
+        break;
+
+      case "up":
+        doUpOrDown("vote_user_page", data, res, token);
+        break;
+    }
+  };
+  const doUpOrDown = async (table, data, res, token) => {
+    const vote = await app
+      .db(table)
+      .where({ id_user: data.id, id_post: data.id_post });
+    if (vote.length > 0) {
+      if (data.vote === "up") {
+        if (vote[0].up != null) {
+          console.log("disable up");
+          app
+            .db(table)
+            .where({ id_user: token.id, id_post: data.id_post })
+            .update({ up: null })
+            .then(_ => {
+              return res.sendStatus(200);
+            })
+            .catch(error => {
+              return res.status(500).send(error);
+            });
+        } else {
+          console.log("able up, disable down");
+          app
+            .db(table)
+            .where({ id_user: token.id, id_post: data.id_post })
+            .update({ up: 1, down: null })
+            .then(_ => {
+              return res.sendStatus(200);
+            })
+            .catch(error => {
+              return res.status(500).send(error);
+            });
+        }
+      } else {
+        if (vote[0].down != null) {
+          console.log("disable down");
+          app
+            .db(table)
+            .where({ id_user: token.id, id_post: data.id_post })
+            .update({ down: null })
+            .then(_ => {
+              return res.sendStatus(200);
+            })
+            .catch(error => {
+              return res.status(500).send(error);
+            });
+        } else {
+          console.log("able down, disable up");
+          app
+            .db(table)
+            .where({ id_user: token.id, id_post: data.id_post })
+            .update({ down: 1, up: null })
+            .then(_ => {
+              return res.sendStatus(200);
+            })
+            .catch(error => {
+              return res.status(500).send(error);
+            });
+        }
+      }
+    } else {
+      if (data.vote == "up") {
+        console.log("insert upvote");
+        app
+          .db(table)
+          .insert({
+            id_user: token.id,
+            id_post: data.id_post,
+            up: 1,
+            down: null
+          })
+          .then(_ => {
+            return res.sendStatus(200);
+          })
+          .catch(error => {
+            return res.status(500).send(error);
+          });
+      } else {
+        console.log("insert downvote");
+        app
+          .db(table)
+          .insert({
+            id_user: token.id,
+            id_post: data.id_post,
+            up: null,
+            down: 1
+          })
+          .then(_ => {
+            return res.sendStatus(200);
+          })
+          .catch(error => {
+            return res.status(500).send(error);
+          });
+      }
+    }
+  };
+
+  /*
+   * COMENTÁRIO
+   * URL Param
+   *
+   * option ('i', 'u', 'd')
+   *
+   * Corpo da requisição
+   *
+   * token in header - Authorization bearer token
+   * id_post -> int
+   * type ('m','u','up') -> string
+   * comment (se for inserir ou atualizar) -> string
+   * id_comment (se for excluír ou atualizar) -> int
+   *
+   */
+  const insertUpdateDeleteComment = async (req, res) => {
+    const option = req.query.option || null;
+    const data = req.body || null;
+    const token = jwt.decode(
+      req.get("Authorization").replace("bearer ", ""),
+      authSecret
+    );
+
+    let table = "";
+
+    switch (data.type) {
+      case "m":
+        table = "comments_meme_page";
+        break;
+
+      case "up":
+        table = "comments_user_page";
+        break;
+
+      case "u":
+        table = "comments_user";
+        break;
+    }
+
+    switch (option) {
+      case "i":
+        insertComment(res, data, table, token);
+        break;
+
+      case "u":
+        updateComment(res, data, table);
+        break;
+
+      case "d":
+        deleteComment(res, data, table);
+        break;
+    }
+  };
+
+  const insertComment = (res, data, table, token) => {
+    app
+      .db(table)
+      .insert({
+        id_user: token.id,
+        id_post: data.id_post,
+        comment: data.comment
+      })
+      .then(_ => {
+        return res.sendStatus(200);
+      })
+      .catch(error => {
+        return res.status(500).send(error);
+      });
+  };
+
+  const updateComment = (res, data, table) => {
+    app
+      .db(table)
+      .where({ id: data.id_comment })
+      .update({ comment: data.comment })
+      .then(_ => {
+        return res.sendStatus(200);
+      })
+      .catch(error => {
+        return res.status(500).send(error);
+      });
+  };
+
+  const deleteComment = (res, data, table) => {
+    app
+      .db(table)
+      .where({ id: data.id_comment })
+      .del()
+      .then(_ => {
+        return res.sendStatus(200);
+      })
+      .catch(error => {
+        return res.status(500).send(error);
+      });
+  };
+
+  /*
+   *
+   * VIEW POST
+   * URL Param
+   * option ('m','up','u')
+   *
+   * CORPO DA REQUISIÇÃO
+   * id_post -> int
+   *
+   * token -> Authorization bearer token
+   */
+  const viewPost = (req, res) => {
+    const option = req.query.option || null;
+    const data = req.body || null;
+    const token = jwt.decode(
+      req.get("Authorization").replace("bearer ", ""),
+      authSecret
+    );
+
+    switch (option) {
+      case "m":
+        insertView(res, data, token, "view_meme_page");
+        break;
+
+      case "up":
+        insertView(res, data, token, "view_user_page");
+        break;
+
+      case "u":
+        insertView(res, data, token, "view_user");
+        break;
+    }
+  };
+
+  const insertView = async (res, data, token, table) => {
+    const views = await app
+      .db(table)
+      .where({ id_user: token.id, id_post: data.id_post });
+
+    let alreadyViewToday = false;
+    views.forEach(element => {
+      var today = new Date();
+      const diff = date_diff_indays(element.created_at, today);
+
+      if (diff == 0) {
+        alreadyViewToday = true;
+      }
+    });
+
+    if (!alreadyViewToday) {
+      app
+        .db(table)
+        .insert({ id_user: token.id, id_post: data.id_post })
+        .then(_ => res.sendStatus(200))
+        .catch(error => res.status(500).send(error));
+    } else {
+      return res.status(200).send("Já viu hoje");
+    }
+  };
+
+  const date_diff_indays = function(date1, date2) {
+    dt1 = new Date(date1);
+    dt2 = new Date(date2);
+    return Math.floor(
+      (Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) -
+        Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) /
+        (1000 * 60 * 60 * 24)
+    );
+  };
+
+  const allViewsOfPost = async (req, res) => {
+    const id_post = req.query.id_post || null;
+    const table = req.query.table || null;
+
+    const result = await app
+      .db(table)
+      .count("id as views")
+      .where({ id_post });
+
+    return res.json(result);
+  };
+
+  const postDetails = async (req, res) => {
+    const id_post = req.query.id_post || null;
+
+    let response = {};
+    const resultPost = await app.db("post_meme_page ")
+      .where({ id: id_post })
+      .select("created_at", "titulo", "midia");
+
+    const resultCat = await app.db
+      .select("categoria")
+      .from("categorias_post_meme_page")
+      .where({ id_post });
+
+    const resultVote = await app
+      .db("vote_meme_page")
+      .count("up as upvotes")
+      .count("down as downvote")
+      .where({ id_post });
+
+    const resultView = await app
+      .db("view_meme_page")
+      .count("id as views")
+      .where({ id_post });
+
+      response = resultPost;
+      response = { ...response[0], ...resultVote[0], ...resultView[0], ...resultCat[0] }
+      return res.json(response);
+  };
+
   return {
-    createPost,
     searchByPage,
     searchBar,
     createPostMemePage,
     createPostUser,
-    createPostUserPage
+    createPostUserPage,
+    upDownVotePost,
+    insertUpdateDeleteComment,
+    viewPost,
+    allViewsOfPost,
+    postDetails
   };
 };

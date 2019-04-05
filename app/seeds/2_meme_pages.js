@@ -14,7 +14,7 @@ exports.seed = function(knex, Promise) {
             "https://www.tribunapr.com.br/blogs/nao-e-spoiler/wp-content/uploads/sites/56/2018/06/santa-claus.jpg"
         },
         {
-          id: 2,
+          id_criador: 2,
           nome: "Namorado distraido",
           descricao:
             "Namorado distraido olhando gostosa enquanto a namorada dele está ao lado",

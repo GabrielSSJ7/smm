@@ -2,8 +2,13 @@ import App, { Container } from "next/app";
 import React from "react";
 import withReduxStore from "../lib/with-redux-store";
 import { Provider } from "react-redux";
+import {withRouter} from 'next/router';
+
+//import "../static/css/index.css";
 
 class MyApp extends App {
+
+  
   componentDidMount() {
     window.fbAsyncInit = function() {
       FB.init({
@@ -41,4 +46,4 @@ class MyApp extends App {
   }
 }
 
-export default withReduxStore(MyApp);
+export default withRouter(withReduxStore(MyApp));

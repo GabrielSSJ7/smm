@@ -2,9 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Link from "next/link";
-import Router from "next/router";
+import Router, { withRouter } from "next/router";
 import {
-  mudaNome,
   mudaEmail,
   mudaSenha,
   entrar,
@@ -12,10 +11,9 @@ import {
   mudaNickName,
   temApelido
 } from "../config/actions/UserActions";
+
 import Template from "./../components/Template";
-import { Modal, Button } from "react-bootstrap";
-import Axios from "axios";
-import { actionTypes } from "../config/types";
+
 
 class Login extends React.Component {
   static getInitialProps({ reduxStore, req }) {
@@ -40,16 +38,17 @@ class Login extends React.Component {
     this.setState({ show: true });
   }
 
-  componentDidMount()  {
-    
+  componentDidMount() {
     if (localStorage.getItem("authToken")) {
-      Router.push("/")
+      Router.push("/NewMemePage");
       this.props.temApelido();
     }
   }
 
-  componentWillUnmount() {}
-
+  changePage() { 
+      Router.push("/").catch(error =>{ 
+      })
+  }
   _entrar() {
     const data = {
       nome: this.props.nome,
@@ -61,38 +60,6 @@ class Login extends React.Component {
   }
 
   render() {
-    if (this.props.show) {
-      //Router.push("/");
-
-      return (
-        <Template>
-          <div className="container">
-            <div className="row">
-              <div className="col-sm-6" style={{ margin: "10% auto" }}>
-                <h2>Escolha seu apelido!</h2>
-                <div className="form-group">
-                  <label>Nickname</label>
-                  <input
-                    id="email"
-                    className="form-control"
-                    type="text"
-                    onChange={e => this.props.mudaNickName(e.target.value)}
-                  />
-                </div>
-
-                <p style={{ textAlign: "center", color: "red" }}>
-                  {this.props.result}
-                </p>
-
-                <button className="btn btn-info" onClick={() => this._entrar()}>
-                  Confirmar
-                </button>
-              </div>
-            </div>
-          </div>
-        </Template>
-      );
-    }
     return (
       <Template>
         <div className="container">
@@ -121,9 +88,10 @@ class Login extends React.Component {
                 {this.props.result}
               </p>
 
-              <div className="login100-form-social flex-c-m">
+              <div style={{ marginBottom: 10}} className="login100-form-social flex-c-m">
                 <a
                   style={{
+                    marginBottom: 10,
                     padding: "2%",
                     backgroundColor: "#3b5998",
                     cursor: "pointer"
@@ -131,11 +99,7 @@ class Login extends React.Component {
                   onClick={() => this.props.loginWithFacebook()}
                   className="login100-form-social-item flex-c-m bg1 m-r-5"
                 >
-                  <i
-                    style={{ color: "white" }}
-                    className="fa fa-facebook-f"
-                    aria-hidden="true"
-                  />
+                 <i  class="fab fa-facebook-f"></i>
                 </a>
               </div>
 
@@ -146,8 +110,8 @@ class Login extends React.Component {
                   </a>
                 </Link>
               </div>
-
-              <button onClick={this.handleShow.bind(this)}>Abrir</button>
+              
+    
 
               <button className="btn btn-info" onClick={() => this._entrar()}>
                 Entrar
@@ -159,7 +123,6 @@ class Login extends React.Component {
     );
   }
 }
-
 const mapDispatchToProps = dispatch => {
   return {
     mudaEmail: bindActionCreators(mudaEmail, dispatch),
@@ -167,7 +130,7 @@ const mapDispatchToProps = dispatch => {
     entrar: bindActionCreators(entrar, dispatch),
     loginWithFacebook: bindActionCreators(loginWithFacebook, dispatch),
     mudaNickName: bindActionCreators(mudaNickName, dispatch),
-    temApelido: bindActionCreators(temApelido, dispatch),
+    temApelido: bindActionCreators(temApelido, dispatch)
   };
 };
 
@@ -181,7 +144,9 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Login)
+);

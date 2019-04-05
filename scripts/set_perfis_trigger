@@ -1,0 +1,34 @@
+CREATE OR REPLACE FUNCTION set_perfis_func()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+	declare userid INTEGER;
+BEGIN
+	userid = NEW.id;
+
+INSERT INTO perfis ("id_user", "perfil", "ativado") VALUES (userid, 'caixa', false);
+INSERT INTO perfis ("id_user", "perfil", "ativado") VALUES (userid, 'cozinha', false);
+INSERT INTO perfis ("id_user", "perfil", "ativado") VALUES (userid, 'separacao', false);
+INSERT INTO perfis ("id_user", "perfil", "ativado") VALUES (userid, 'entregador', false);
+INSERT INTO perfis ("id_user", "perfil", "ativado") VALUES (userid, 'adm', false);
+
+RETURN NEW;
+END;
+$BODY$
+
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+drop trigger set_perfis();
+drop function set_perfis_func();
+
+
+CREATE TRIGGER set_perfis
+    AFTER INSERT
+    ON public.usuario
+    FOR EACH ROW
+    EXECUTE PROCEDURE public.set_perfis_func();
+  
+  INSERT INTO usuario ("nome", "id_contratante", "nick", "email", "perfil", "cpf", "ativo") VALUES ('Aang', 1, 'ang', 'ang@hotm.com', 'caixa','12131', true)
+  
+  select * from perfis;  

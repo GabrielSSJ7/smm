@@ -1,0 +1,15 @@
+SELECT * FROM meme_page;
+SELECT usuario.nick, usuario.foto FROM subscribe_meme_page 
+JOIN usuario ON subscribe_meme_page.id_user = usuario.id
+WHERE id_page = 2;
+
+SELECT count(id) FROM view_meme_page where id_post = 6;
+SELECT count(up) FROM vote_meme_page where id_post = 6;
+
+SELECT post_meme_page.id,post_meme_page.created_at, post_meme_page.midia, post_meme_page.titulo,
+view_meme_page.id as id_view, sum(view_meme_page.id ) FROM post_meme_page 
+FULL JOIN view_meme_page ON post_meme_page.id = view_meme_page.id_post
+FULL JOIN vote_meme_page ON post_meme_page.id = vote_meme_page.id_post
+WHERE post_meme_page.id = 6
+GROUP BY post_meme_page.created_at, post_meme_page.midia, post_meme_page.titulo, post_meme_page.id,
+view_meme_page.id;

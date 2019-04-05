@@ -1,0 +1,1 @@
+export default () => (<div><h1>Teste</h1></div>);

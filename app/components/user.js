@@ -15,7 +15,7 @@ module.exports = app => {
     return bcrypt.hashSync(password, salt);
   };
 
-  const signin = (req, res) => {
+  const signin = async (req, res) => {
     const user = { ...req.body };
 
     try {
@@ -28,7 +28,11 @@ module.exports = app => {
       return res.status(400).send(msg);
     }
 
-    user.password = encryptPassword(user.password);
+    const rEmail = await app.db('usuario').where({ email: user.email });
+
+    if(rEmail.length > 0) return res.status(400).send("Este e-mail já está sendo usado.");
+
+    user.password = encryptPassword(user.password); 
 
     app
       .db("usuario")
@@ -41,6 +45,7 @@ module.exports = app => {
   };
 
   const login = async (req, res) => {
+    console.log(req.body)
     if (!req.body.email || !req.body.password) {
       return res.status(400).send("Informe usuário e senha!");
     }
@@ -67,8 +72,9 @@ module.exports = app => {
       id: user.id,
       name: user.name,
       email: user.email,
+      nick: user.nick,
       iat: now,
-      exp: now + 60 * 60 * 24
+      exp: now + 60 * 60 * 24 * 365
       // exp: now + 1
     };
 
@@ -102,6 +108,7 @@ module.exports = app => {
         id: userDB.id,
         name: userDB.name,
         email: userDB.email,
+        nick: userDB.nick,
         iat: now,
         exp: now + 60 * 60 * 24
         // exp: now + 1
@@ -172,9 +179,9 @@ module.exports = app => {
           })
           .then(user => {
             if (!user[0].nick) {
-              res.status(200).send(false);
-            } else {
               res.status(200).send(true);
+            } else {
+              res.status(200).send(false);
             }
           });
       }
@@ -193,7 +200,6 @@ module.exports = app => {
     }
 
     token = jwt.decode(token, authSecret);
-
     app
       .db("usuario")
       .where({

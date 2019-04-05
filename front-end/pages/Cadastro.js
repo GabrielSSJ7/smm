@@ -1,13 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Router from 'next/router'
+import Router from "next/router";
 
 import {
   mudaNome,
   mudaEmail,
   mudaSenha,
-  cadastrar
+  cadastrar,
+  mudaNickName
 } from "../config/actions/UserActions";
 import Template from "./../components/Template";
 
@@ -18,22 +19,22 @@ class Cadastro extends React.Component {
     return {};
   }
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    this.state = { 
+    this.state = {
       error: ""
-    }
+    };
   }
 
   componentDidMount() {
     if (this.props.result) {
-      console.log(this.props.result)
+      console.log(this.props.result);
       Router.push(`/Login`);
     }
-    if(localStorage.getItem("authToken")){
-      Router.push("/")
-  }
+    if (localStorage.getItem("authToken")) {
+      Router.push("/");
+    }
   }
 
   componentWillUnmount() {}
@@ -42,10 +43,34 @@ class Cadastro extends React.Component {
     const data = {
       nome: this.props.nome,
       email: this.props.email,
-      password: this.props.password
+      password: this.props.password,
+      nick: this.props.nick
     };
 
     this.props.cadastrar(data);
+  }
+
+  jatemapelido() {
+    console.log("result Apelido",this.props.resultNick)
+    if (this.props.resultNick != "Apelido já está sendo usado") {
+      return (
+        <div>
+          <p style={{ textAlign: "center", color: "green" }}>
+            {this.props.resultNick}
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p style={{ textAlign: "center", color: "red" }}>
+            {this.props.resultNick}
+          </p>
+
+    
+        </div>
+      );
+    }
   }
 
   render() {
@@ -73,6 +98,18 @@ class Cadastro extends React.Component {
                 />
               </div>
               <div className="form-group">
+                <label>Nickname</label>
+                <input
+                  id="email"
+                  className="form-control"
+                  type="text"
+                  onChange={e => this.props.mudaNickName(e.target.value)}
+                  value={this.props.nick}
+                  autoComplete="off"
+                />
+                  {this.jatemapelido()}
+              </div>
+              <div className="form-group">
                 <label>Senha</label>
                 <input
                   id="senha"
@@ -82,7 +119,11 @@ class Cadastro extends React.Component {
                 />
               </div>
 
-              <p style={{ textAlign: "center", color: "red"}}>{this.props.result}</p>
+              <p style={{ textAlign: "center", color: "red" }}>
+                {this.props.result}
+              </p>
+
+            
 
               <button
                 className="btn btn-info"
@@ -103,7 +144,8 @@ const mapDispatchToProps = dispatch => {
     mudaNome: bindActionCreators(mudaNome, dispatch),
     mudaEmail: bindActionCreators(mudaEmail, dispatch),
     mudaSenha: bindActionCreators(mudaSenha, dispatch),
-    cadastrar: bindActionCreators(cadastrar, dispatch)
+    cadastrar: bindActionCreators(cadastrar, dispatch),
+    mudaNickName: bindActionCreators(mudaNickName, dispatch)
   };
 };
 
@@ -113,7 +155,9 @@ const mapStateToProps = state => {
     nome: state.UserReducer.nome,
     email: state.UserReducer.email,
     password: state.UserReducer.password,
-    result: state.UserReducer.result
+    result: state.UserReducer.result,
+    resultNick: state.UserReducer.resultNick,
+    nick: state.UserReducer.nick
   };
 };
 

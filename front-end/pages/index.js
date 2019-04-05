@@ -1,73 +1,89 @@
 import React from "react";
 import { connect } from "react-redux";
-import Axios from "axios";
-import Router from "next/router";
-
-import Examples from "../components/examples";
-import { actionTypes } from "../config/types";
-import { temApelido } from "../config/actions/UserActions";
+import { withRouter } from "next/router";
+import { temApelido, mudaNickName } from "../config/actions/UserActions";
 import Template from "../components/Template";
+import { Modal, Button } from 'react-bootstrap';
+import ModalNickName from '../components/ModalNickName';
 
 import "../static/css/index.css";
+import NavBar from "../components/NavBar";
 
 class Index extends React.Component {
-  static getInitialProps({ reduxStore, req }) {
-    const isServer = !!req;
-    //reduxStore.dispatch(serverRenderClock(isServer))
-
-    return {};
+  constructor(props) {
+    super(props);
+    this.state = { nick: '', show: false }
   }
+
 
   componentDidMount() {
-    // if (localStorage.getItem("authToken")) {
-    //   this.props.temApelido();
-    // }
-    Axios.post(`${actionTypes.URL}validateToken`, {
-      token: localStorage.getItem("authToken")
+    this.props.temApelido();
+    this.setState({
+      nick: localStorage.getItem("nick"),
+      show: this.props.show
     })
-      .then(res => {
-        console.log("cdi", res);
-        if (!res.data) {
-          localStorage.removeItem("authToken");
-          Axios.defaults.headers.common["Authorization"] = ``;
-          Router.push("/Login");
-        } else {
-          this.props.temApelido();
-        }
-        console.log("validate Token", res);
-      })
-      .catch(erro => {});
   }
 
-  componentWillUnmount() {
-    //clearInterval(this.timer)
+  handleClose() {
+    this.setState({
+      show: true
+    })
+  }
+
+  hasNickName() {
+    if (this.props.resultNick != "Apelido já está sendo usado") {
+      return (
+        <div>
+          <p style={{ textAlign: "center", color: "green" }}>
+            {this.props.resultNick}
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p style={{ textAlign: "center", color: "red" }}>
+            {this.props.resultNick}
+          </p>
+
+        </div>
+      );
+    }
   }
 
   render() {
+    console.log("index:render",this.props.show)
     return (
-      <Template>
-        <div className="container" style={{ marginTop: "15%" }}>
-          <div className="row">
-            <div className="col-sm-6" style={{ margin: "0 auto" }}>
-              <button
-                onClick={() =>
-                  Router.push("/NewMemePage")
-                }
-                className="index-test-buttons"
-                id="create-meme-page"
-              >
-                <img src="../static/images/new-window.png" alt="nova janela" />
-                <p>New Meme Page</p>
-              </button>
+      <div>
+        <NavBar />
+        <Template >
+          <div className="container" style={{ marginTop: "15%" }}>
+            <div className="row">
+              
             </div>
           </div>
-        </div>
-      </Template>
+
+         <ModalNickName show={this.props.show} />
+
+        </Template>
+      </div>
     );
   }
 }
 
-export default connect(
-  null,
-  { temApelido }
-)(Index);
+
+const mapStateToProps = state => {
+  console.log("index:mapStateToProps => ",state.UserReducer.show)
+  return {
+    show: state.UserReducer.show,
+    resultNick: state.UserReducer.resultNick
+  };
+};
+
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { temApelido, mudaNickName }
+  )(Index)
+);

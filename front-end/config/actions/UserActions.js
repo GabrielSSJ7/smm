@@ -19,7 +19,7 @@ export const mudaNickName = texto => {
   if (texto.length > 0) {
     return dispatch => {
       Axios.get(`${actionTypes.URL}buscaapelido/${texto}`).then(res => {
-        console.log(res);
+        console.log("USERACTION: mudaNick", res);
         dispatch({
           type: actionTypes.MUDA_NICKNAME,
           payload: texto,
@@ -48,10 +48,11 @@ export const cadastrarApelido = nick => {
         token: localStorage.getItem("authToken")
       })
       .then(res => {
-        console.log(res)
         if (res.data) {
+          localStorage.setItem("nick", nick);
           dispatch({
-            type: ""
+            type: actionTypes.CADASTRO_APELIDO,
+            payload: true
           });
           Router.push("/");
         }
@@ -66,25 +67,28 @@ export const mudaSenha = texto => {
   };
 };
 
-export const temApelido = () => {
-  return dispatch => {
+export const temApelido =  () => {
+  return async dispatch => {
+    const authToken = await localStorage.getItem("authToken");
+    console.log(authToken)
     const instance = Axios.create({
       headers: {
-        Authorization: `bearer ${localStorage.getItem("authToken")}`
+        Authorization: `bearer ${authToken}`
       }
     });
 
     instance
       .post(`${actionTypes.URL}temapelido`, {
-        token: localStorage.getItem("authToken")
+        token: authToken
       })
       .then(res => {
+        console.log(res.data);
         if (res.data) {
-          dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: false });
+          dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: true });
           Router.push("/");
         } else {
-          dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: true });
-          Router.push("/Apelido");
+          dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: false });
+          //Router.push("/Apelido");
         }
       });
   };
@@ -127,6 +131,7 @@ export const entrar = data => {
       .then(res => {
         if (res.data) {
           localStorage.setItem("authToken", res.data.token);
+          localStorage.setItem("nick", res.data.nick);
 
           Axios.defaults.headers.common["Authorization"] = `bearer ${
             res.data.token
@@ -137,18 +142,19 @@ export const entrar = data => {
         }
       })
       .catch(erro => {
-        console.log(erro);
         dispatch(loginErro(erro));
       });
   };
 };
 
 const loginSucesso = () => {
+  Router.push("/");
   return {
     type: actionTypes.LOGIN_SUCESSO,
     payload: true,
     show: true
   };
+  
 };
 
 const loginErro = erro => {
@@ -163,10 +169,12 @@ export const loginWithFacebook = () => {
     FB.login(
       function(response) {
         if (response.authResponse) {
+          let email =null;
           var url = "/me?fields=name,email";
 
           FB.api(url, function(response) {
             console.log("Facebook", response);
+            email = response.email;
             const data = {
               nome: response.name,
               email: response.email,
@@ -178,6 +186,10 @@ export const loginWithFacebook = () => {
             Axios.post(`${actionTypes.URL}signin-with-facebook`, data)
               .then(res => {
                 localStorage.setItem("authToken", res.data.token);
+                Axios.post(`${actionTypes.URL}login`, {email, password: "facebook" })
+                .then(res => {
+                  localStorage.setItem("nick", res.data.nick);
+                })
 
                 Axios.defaults.headers.common["Authorization"] = `bearer ${
                   res.data.token
