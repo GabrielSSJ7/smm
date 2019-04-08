@@ -1,4 +1,4 @@
-((window["webpackJsonp"] = window["webpackJsonp"] || []).push([["static/development/pages/_app.js"],{
+((window["webpackJsonp"] = window["webpackJsonp"] || []).push([["static\\development\\pages\\_app.js"],{
 
 /***/ "./config/reducers/PostsReducer.js":
 /*!*****************************************!*\
@@ -14,16 +14,28 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var INITIAL_STATE = {
-  lastUpdate: 0
+  posts: [],
+  vote: {},
+  comments: []
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_STATE;
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
-    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].MUDA_NOME:
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_POSTS_SEARCH_BAR_SUCESSO:
       return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
-        nome: action.payload
+        posts: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].UP_OR_DOWN_VOTE:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        vote: Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, action.payload[0])
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_POST_COMMENTS:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        comments: action.payload
       });
 
     default:
@@ -200,7 +212,10 @@ var actionTypes = {
   LOGIN_ERRO: "LOGIN_ERRO",
   LOGIN_FACEBOOK_SUCESSO: "LOGIN_FACEBOOK_SUCESSO",
   MUDA_NICKNAME: "muda_nickname",
-  TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO"
+  TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO",
+  FETCH_POSTS_SEARCH_BAR_SUCESSO: "fetchpostssearchbarsucesso",
+  UP_OR_DOWN_VOTE: "upordownvote",
+  FETCH_POST_COMMENTS: "fetchpostcomments"
 };
 var FACEBOOK_PROFILE_PIC_URL = function FACEBOOK_PROFILE_PIC_URL(userId) {
   return "https://graph.facebook.com/".concat(userId, "/picture?type=large");
@@ -239,7 +254,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _jsxFileName = "/home/mastersparda/\xC1rea de Trabalho/react/sauce/front-end/lib/with-redux-store.js";
+var _jsxFileName = "C:\\react\\smm\\front-end\\lib\\with-redux-store.js";
 
 
 var isServer = typeof window === 'undefined';
@@ -7265,23 +7280,23 @@ exports.createUrl = createUrl;
 
 /***/ "./node_modules/object-assign/index.js":
 /*!***************************************************************************************************!*\
-  !*** delegated ./node_modules/object-assign/index.js from dll-reference dll_6dc2816e14fab51b8269 ***!
+  !*** delegated ./node_modules/object-assign/index.js from dll-reference dll_6800203e41e094502ca4 ***!
   \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = (__webpack_require__(/*! dll-reference dll_6dc2816e14fab51b8269 */ "dll-reference dll_6dc2816e14fab51b8269"))("./node_modules/object-assign/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dll_6800203e41e094502ca4 */ "dll-reference dll_6800203e41e094502ca4"))("./node_modules/object-assign/index.js");
 
 /***/ }),
 
 /***/ "./node_modules/prop-types/checkPropTypes.js":
 /*!*********************************************************************************************************!*\
-  !*** delegated ./node_modules/prop-types/checkPropTypes.js from dll-reference dll_6dc2816e14fab51b8269 ***!
+  !*** delegated ./node_modules/prop-types/checkPropTypes.js from dll-reference dll_6800203e41e094502ca4 ***!
   \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = (__webpack_require__(/*! dll-reference dll_6dc2816e14fab51b8269 */ "dll-reference dll_6dc2816e14fab51b8269"))("./node_modules/prop-types/checkPropTypes.js");
+module.exports = (__webpack_require__(/*! dll-reference dll_6800203e41e094502ca4 */ "dll-reference dll_6800203e41e094502ca4"))("./node_modules/prop-types/checkPropTypes.js");
 
 /***/ }),
 
@@ -7889,12 +7904,12 @@ if (true) {
 
 /***/ "./node_modules/prop-types/lib/ReactPropTypesSecret.js":
 /*!*******************************************************************************************************************!*\
-  !*** delegated ./node_modules/prop-types/lib/ReactPropTypesSecret.js from dll-reference dll_6dc2816e14fab51b8269 ***!
+  !*** delegated ./node_modules/prop-types/lib/ReactPropTypesSecret.js from dll-reference dll_6800203e41e094502ca4 ***!
   \*******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = (__webpack_require__(/*! dll-reference dll_6dc2816e14fab51b8269 */ "dll-reference dll_6dc2816e14fab51b8269"))("./node_modules/prop-types/lib/ReactPropTypesSecret.js");
+module.exports = (__webpack_require__(/*! dll-reference dll_6800203e41e094502ca4 */ "dll-reference dll_6800203e41e094502ca4"))("./node_modules/prop-types/lib/ReactPropTypesSecret.js");
 
 /***/ }),
 
@@ -9702,12 +9717,12 @@ module.exports = hoistNonReactStatics;
 
 /***/ "./node_modules/react/index.js":
 /*!*******************************************************************************************!*\
-  !*** delegated ./node_modules/react/index.js from dll-reference dll_6dc2816e14fab51b8269 ***!
+  !*** delegated ./node_modules/react/index.js from dll-reference dll_6800203e41e094502ca4 ***!
   \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = (__webpack_require__(/*! dll-reference dll_6dc2816e14fab51b8269 */ "dll-reference dll_6dc2816e14fab51b8269"))("./node_modules/react/index.js");
+module.exports = (__webpack_require__(/*! dll-reference dll_6800203e41e094502ca4 */ "dll-reference dll_6800203e41e094502ca4"))("./node_modules/react/index.js");
 
 /***/ }),
 
@@ -12049,12 +12064,12 @@ module.exports = {
 
 /***/ "./node_modules/webpack/buildin/global.js":
 /*!******************************************************************************************************!*\
-  !*** delegated ./node_modules/webpack/buildin/global.js from dll-reference dll_6dc2816e14fab51b8269 ***!
+  !*** delegated ./node_modules/webpack/buildin/global.js from dll-reference dll_6800203e41e094502ca4 ***!
   \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = (__webpack_require__(/*! dll-reference dll_6dc2816e14fab51b8269 */ "dll-reference dll_6dc2816e14fab51b8269"))("./node_modules/webpack/buildin/global.js");
+module.exports = (__webpack_require__(/*! dll-reference dll_6800203e41e094502ca4 */ "dll-reference dll_6800203e41e094502ca4"))("./node_modules/webpack/buildin/global.js");
 
 /***/ }),
 
@@ -12155,7 +12170,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _jsxFileName = "/home/mastersparda/\xC1rea de Trabalho/react/sauce/front-end/pages/_app.js";
+var _jsxFileName = "C:\\react\\smm\\front-end\\pages\\_app.js";
 
 
 
@@ -12268,14 +12283,14 @@ function initializeStore() {
 
 /***/ }),
 
-/***/ "dll-reference dll_6dc2816e14fab51b8269":
+/***/ "dll-reference dll_6800203e41e094502ca4":
 /*!*******************************************!*\
-  !*** external "dll_6dc2816e14fab51b8269" ***!
+  !*** external "dll_6800203e41e094502ca4" ***!
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = dll_6dc2816e14fab51b8269;
+module.exports = dll_6800203e41e094502ca4;
 
 /***/ })
 

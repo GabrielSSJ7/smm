@@ -85,7 +85,9 @@ module.exports = app => {
   };
 
   const signinWithFacebook = async (req, res) => {
+
     const user = { ...req.body, password: "facebook" };
+    console.log(user)
 
     try {
       existsOrError(user.nome, "Nome não informado.");
@@ -102,6 +104,7 @@ module.exports = app => {
 
     // if already logged in other time
     if (userDB) {
+      console.log("already logged in other time")
       const now = Math.floor(Date.now() / 1000);
 
       const payload = {

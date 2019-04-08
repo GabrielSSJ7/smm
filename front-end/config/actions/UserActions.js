@@ -19,7 +19,7 @@ export const mudaNickName = texto => {
   if (texto.length > 0) {
     return dispatch => {
       Axios.get(`${actionTypes.URL}buscaapelido/${texto}`).then(res => {
-        console.log("USERACTION: mudaNick", res);
+
         dispatch({
           type: actionTypes.MUDA_NICKNAME,
           payload: texto,
@@ -37,19 +37,21 @@ export const mudaNickName = texto => {
 };
 
 export const cadastrarApelido = nick => {
+  const localData = JSON.parse(localStorage.getItem("data"));
   const instance = Axios.create({
-    headers: { Authorization: `bearer ${localStorage.getItem("authToken")}` }
+    headers: { Authorization: `bearer ${localData.token}` }
   });
 
   return dispatch => {
     instance
       .post(`${actionTypes.URL}adicionaapelido`, {
         nick,
-        token: localStorage.getItem("authToken")
+        token: localData.token
       })
       .then(res => {
         if (res.data) {
-          localStorage.setItem("nick", nick);
+          const data = { token: localData.token, nick }
+          localStorage.setItem("data", JSON.stringify(data));
           dispatch({
             type: actionTypes.CADASTRO_APELIDO,
             payload: true
@@ -69,20 +71,22 @@ export const mudaSenha = texto => {
 
 export const temApelido =  () => {
   return async dispatch => {
-    const authToken = await localStorage.getItem("authToken");
-    console.log(authToken)
+    const authToken = await JSON.parse(localStorage.getItem("data")) || null;
+    
+    if (authToken){
+
     const instance = Axios.create({
       headers: {
-        Authorization: `bearer ${authToken}`
+        Authorization: `bearer ${authToken.token}`
       }
     });
 
     instance
       .post(`${actionTypes.URL}temapelido`, {
-        token: authToken
+        token: authToken.token
       })
       .then(res => {
-        console.log(res.data);
+        
         if (res.data) {
           dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: true });
           Router.push("/");
@@ -91,6 +95,10 @@ export const temApelido =  () => {
           //Router.push("/Apelido");
         }
       });
+    } else {
+      console.log("não logado");
+      dispatch({ type: actionTypes.TEM_APELIDO_SUCESSO, payload: false });
+    }
   };
 };
 
@@ -104,7 +112,7 @@ export const cadastrar = data => {
         }
       })
       .catch(erro => {
-        console.log(erro.response.data);
+        
         dispatch(cadastroErro(erro));
       });
   };
@@ -130,8 +138,11 @@ export const entrar = data => {
     Axios.post(`${actionTypes.URL}login`, data)
       .then(res => {
         if (res.data) {
-          localStorage.setItem("authToken", res.data.token);
-          localStorage.setItem("nick", res.data.nick);
+          const localData = {
+            token: res.data.token,
+            nick: res.data.nick
+          }
+          localStorage.setItem("data", JSON.stringify(localData));
 
           Axios.defaults.headers.common["Authorization"] = `bearer ${
             res.data.token
@@ -173,7 +184,7 @@ export const loginWithFacebook = () => {
           var url = "/me?fields=name,email";
 
           FB.api(url, function(response) {
-            console.log("Facebook", response);
+
             email = response.email;
             const data = {
               nome: response.name,
@@ -182,13 +193,16 @@ export const loginWithFacebook = () => {
             };
 
             dispatch(loginFacebookSucesso());
-
+            let localData = {}
             Axios.post(`${actionTypes.URL}signin-with-facebook`, data)
               .then(res => {
-                localStorage.setItem("authToken", res.data.token);
+                localData = { token: res.data.token }
+
                 Axios.post(`${actionTypes.URL}login`, {email, password: "facebook" })
+
                 .then(res => {
-                  localStorage.setItem("nick", res.data.nick);
+                  localData = { ...localData, nick: res.data.nick }
+                  localStorage.setItem("data", JSON.stringify(localData));
                 })
 
                 Axios.defaults.headers.common["Authorization"] = `bearer ${
@@ -198,7 +212,7 @@ export const loginWithFacebook = () => {
                 //Router.push("/");
               })
               .catch(err => {
-                console.log(err);
+                
               });
           });
         } else {

@@ -14,7 +14,11 @@ export const actionTypes = {
   LOGIN_ERRO: "LOGIN_ERRO",
   LOGIN_FACEBOOK_SUCESSO: "LOGIN_FACEBOOK_SUCESSO",
   MUDA_NICKNAME: "muda_nickname",
-  TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO"
+  TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO",
+
+  FETCH_POSTS_SEARCH_BAR_SUCESSO: "fetchpostssearchbarsucesso",
+  UP_OR_DOWN_VOTE: "upordownvote",
+  FETCH_POST_COMMENTS: "fetchpostcomments"
 };
 
 export const FACEBOOK_PROFILE_PIC_URL = userId => {

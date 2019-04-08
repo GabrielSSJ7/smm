@@ -87,5 +87,66 @@
 .nav-dropdown-item:hover {
     color: orange
 }
+.post {
+    margin-bottom: 50px;
+    border: 1px solid orange;
+    padding: 20px;
+}
+
+#post-div-updownvote button{
+    background: none;
+    border: none;
+    margin: 0 auto;
+}
+
+#post-div-updownvote button:hover{
+    color: orange;
+}
+
+#post-div-updownvote p {
+    margin: 0;
+    align-self: center
+}
+
+.post-footer button{
+    background: none;
+    border: none;
+    margin: 0 auto;
+    padding: 5px
+}
+
+.post-footer button:hover{
+    background: black;
+    color: white;
+    border-radius: 10px;
+
+}
+
+.post-div-circle {
+    background-color: #aaa;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .post-div-circle img {
+    position: absolute;
+    /* bottom: 0; */
+    width: 100%;
+  }
+
+  .btn-comments-send:hover {
+      border-top-left-radius: 0px !important;
+      border-bottom-left-radius: 0px !important;
+      border-top-right-radius: 5px !important;
+      border-bottom-right-radius: 5px !important;
+  }
+
+  .input-comment {
+      border-top-right-radius: 0px !important;
+      border-bottom-right-radius: 0px !important;
+  }
 
 /*# sourceMappingURL=styles.chunk.css.map*/

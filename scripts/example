@@ -1,0 +1,13 @@
+Select * from post_user_page where titulo = 'Meme bosta'
+select up, down, nick, id_post from vote_user_page 
+FULL JOIN usuario on vote_user_page.id_user = usuario.id where id_post = 2 and id_user = 1
+
+ SELECT DISTINCT post_user_page.titulo, post_user_page.descricao, post_user_page.midia, post_user_page.id, post_user_page.id_user_page,
+      (SELECT up FROM vote_user_page where id_user = 1 and id_post = post_user_page.id) as up_on,
+      (SELECT down FROM vote_user_page where id_user = 1 and id_post = post_user_page.id) as down_on,
+      count(up) as upvote, count(down) as downvote, post_user_page.created_at, usuario.nick, usuario.foto
+FROM post_user_page
+      full JOIN user_page ON post_user_page.id_user_page = user_page.id
+      full JOIN usuario ON post_user_page.id_criador = usuario.id
+      full JOIN keywords_post_user_page ON post_user_page.id = keywords_post_user_page.id_post
+      full JOIN vote_user_page ON post_user_page.id = vote_user_page.id_post  WHERE keywords_post_user_page.keyword  ILIKE 'b%' GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page, usuario.nick, usuario.foto,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at  ORDER BY upvote DESC

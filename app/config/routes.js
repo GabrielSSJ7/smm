@@ -21,6 +21,7 @@ module.exports = app =>
 
     app.route("/updownvote").all(app.config.passport.authenticate()).post(app.components.post.upDownVotePost);
     app.route("/comment").all(app.config.passport.authenticate()).post(app.components.post.insertUpdateDeleteComment);
+    app.route("/fetchcomments").get(app.components.post.fetchComments);
     app.route("/view").all(app.config.passport.authenticate()).post(app.components.post.viewPost);
     app.route("/allviews").all(app.config.passport.authenticate()).get(app.components.post.allViewsOfPost);
     app.route("/postdetails").all(app.config.passport.authenticate()).get(app.components.post.postDetails);
