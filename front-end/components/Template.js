@@ -2,12 +2,12 @@ import Head from "next/head";
 import Axios from "axios";
 import { actionTypes } from "../config/types";
 import NavBar from "./NavBar";
-import Router from 'next/router';
-import {Modal, Button} from 'react-bootstrap';
+import Router from "next/router";
+import { Modal, Button } from "react-bootstrap";
 
 let nick = null;
 
-import '../static/css/index.css';
+import "../static/css/index.css";
 class Template extends React.Component {
   constructor(props) {
     super(props);
@@ -29,10 +29,9 @@ class Template extends React.Component {
             this.props.temApelido();
           }
         })
-        .catch(erro => { });
+        .catch(erro => {});
     }
   }
-
 
   render() {
     return (
@@ -43,10 +42,13 @@ class Template extends React.Component {
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           />
-          <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossOrigin="anonymous" />      
+          <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+            integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+            crossOrigin="anonymous"
+          />
         </Head>
-
-        
 
         <div className="container-fluid">{this.props.children}</div>
 

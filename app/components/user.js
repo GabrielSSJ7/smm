@@ -72,6 +72,7 @@ module.exports = app => {
       id: user.id,
       name: user.name,
       email: user.email,
+      foto: user.foto,
       nick: user.nick,
       iat: now,
       exp: now + 60 * 60 * 24 * 365
@@ -111,6 +112,7 @@ module.exports = app => {
         id: userDB.id,
         name: userDB.name,
         email: userDB.email,
+        foto: userDB.foto,
         nick: userDB.nick,
         iat: now,
         exp: now + 60 * 60 * 24

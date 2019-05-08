@@ -140,7 +140,10 @@ export const entrar = data => {
         if (res.data) {
           const localData = {
             token: res.data.token,
-            nick: res.data.nick
+            nick: res.data.nick,
+            foto: res.data.foto,
+            email: res.data.email,
+            id: res.data.id
           }
           localStorage.setItem("data", JSON.stringify(localData));
 
@@ -169,6 +172,7 @@ const loginSucesso = () => {
 };
 
 const loginErro = erro => {
+  console.log(erro);
   return {
     type: actionTypes.LOGIN_ERRO,
     payload: erro.response.data
@@ -201,7 +205,7 @@ export const loginWithFacebook = () => {
                 Axios.post(`${actionTypes.URL}login`, {email, password: "facebook" })
 
                 .then(res => {
-                  localData = { ...localData, nick: res.data.nick }
+                  localData = { ...localData, nick: res.data.nick, foto: res.data.foto, email: res.data.email, id: res.data.id }
                   localStorage.setItem("data", JSON.stringify(localData));
                 })
 

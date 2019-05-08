@@ -29,6 +29,7 @@ class NavBar extends React.Component {
         <NavDropdown title="" id="nav-dropdown">
           <NavDropdown.Item href="/NewMemePage" eventKey="4.1" className="nav-dropdown-item">Criar Meme</NavDropdown.Item>
         </NavDropdown>
+        <button className="btn btn-default" onClick={()=> Router.push('/NewPostUser', "new-post", { shallow: true })}><i className="fas fa-plus"></i></button>
         <button className="btn btn-default" onClick={() => this.logOut()}>Sair</button>
         
       </div >
@@ -52,7 +53,6 @@ class NavBar extends React.Component {
               <div className="col-md-1" style={{ marginLeft: -1, paddingLeft: 0 }}>
                 <button id="search-btn" onClick={() => {window.location = `/Posts?key=${this.state.key}`}} className="btn btn-default"><i className="fas fa-search"></i></button>
               </div>
-
             </div>
           </div>
           <div className="col-md-4">

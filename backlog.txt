@@ -1,0 +1,83 @@
+FRONT END:
+USER:
+[x]Cadastro
+[x]Login (E-mail, Facebook)
+
+
+Pages:
+[]Criar meme page
+    []Criar formulário e dar submit
+    []Enviar para o backend via PageAction
+    []Receber a resposta e redirecionar o usuário
+    []Estilizar
+[]Criar user page
+    []Criar formulário e dar submit
+    []Enviar para o backend via PageAction
+    []Receber a resposta e redirecionar o usuário
+    []Estilizar
+[]Subscribe
+[]Listar inscritos
+    []Requisitar lista do back
+    []Criar lista em componente separado
+         []Estilizar    
+
+
+Buscas:
+[]Search meme page
+    []Requisitar lista do Back-end
+    []Criar lista das páginas
+    []Estilizar
+[]Search user page
+    []Requisitar lista do Back-end
+    []Criar lista das páginas
+    []Estilizar
+[]Search by page
+    []Requisitar informações da página
+    []Criar tela da página com informações requisitadas
+    []Requisitar lista de post das páginas
+    []Criar formulário de busca para página
+    []Requisitar busca no back-end
+    []Listar busca feita
+    []Estilizar
+[]Search bar
+    [x]Requisitar lista do back
+    [x]Criar lista em componente separado
+         []Estilizar    
+
+
+Post:
+[]create a post user
+    []Criar formulário de post
+    []Criar upload de mídia para Storage
+    []Submit das informações para PostAction
+    []Redirecionar usuário ao receber a resposta do backend
+[]create a post user page
+    []Criar formulário de post
+    []Criar upload de mídia para Storage
+    []Submit das informações para PostAction (NECESSÁRIO INFORMAR QUAL PÁGINA IRÁ POSTAR)
+    []Redirecionar usuário ao receber a resposta do backend
+[]create a post meme page
+    []Criar formulário de post
+    []Criar upload de mídia para Storage
+    []Submit das informações para PostAction
+    []Redirecionar usuário ao receber a resposta do backend
+[x]Up or Down Vote
+    [x]Criar botão para up e down vote
+    [x]Criar contador de upload
+    [x]Ação para upvotar e downvotar
+    [x]Atualizar post ao upvotar ou downvotar
+[]Comentário
+    [x]Carregar quantidade de comentários
+    [x]Formulário para comentar
+    [x]Submit ao comentar PostAction
+    []Atualizar comentários ao receber resposta do servidor
+[]View post
+    []Ação ao clicar no post
+    []Criar miniatura em modal para melhor visualização
+    []Estilizar
+[]Todas as views de um post
+    [] Requisitar views do backend e exibir
+[]Detalhes do post
+    []Requisitar informações do backend
+    []Dispor informações na tela
+    []Estilizar

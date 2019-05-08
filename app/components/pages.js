@@ -485,6 +485,30 @@ module.exports = app => {
     }
   };
 
+  searchPageSubscribed = async (req, res) => {
+    const user = jwt.decode(
+      req.get("Authorization").replace("bearer ", ""),
+      authSecret
+    );
+    const result = await app.db.raw(`SELECT user_page.id, user_page.nome, user_page.midia FROM user_page 
+    INNER JOIN subscribe_user_page ON user_page.id = subscribe_user_page.id_page
+    inner join usuario on subscribe_user_page.id_user = usuario.id WHERE usuario.id = ${user.id}`);
+
+    return res.json(result.rows);
+  }
+
+  searchPageForPost = async (req, res) => {
+    const key = req.query.search
+    const result = await app.db.raw(`SELECT DISTINCT user_page.id, user_page.nome, user_page.midia FROM user_page 
+    INNER JOIN subscribe_user_page ON user_page.id = subscribe_user_page.id_page
+    inner join usuario on subscribe_user_page.id_user = usuario.id 
+    inner join user_page_rel_keywords ON user_page.id = user_page_rel_keywords.id_user_page
+    inner join keywords ON user_page_rel_keywords.id_keywords = keywords.id
+    WHERE  keywords.keyword ilike '${key}%' OR user_page.nome ilike '${key}%'`)
+    
+    return res.json(result.rows);
+  }
+
   getAllSubscribers = async (req, res) => {
     const option = req.query.option || null;
     const id_page = req.query.id_page || null;
@@ -507,6 +531,8 @@ module.exports = app => {
     createNewUserPage,
     searchUsersForAdminPage,
     follow,
-    getAllSubscribers
+    getAllSubscribers,
+    searchPageSubscribed,
+    searchPageForPost
   };
 };

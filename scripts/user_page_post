@@ -1,0 +1,4 @@
+
+SELECT user_page.id, user_page.nome, user_page.midia FROM user_page 
+INNER JOIN subscribe_user_page ON user_page.id = subscribe_user_page.id_page
+inner join usuario on subscribe_user_page.id_user = usuario.id WHERE usuario.id = 2

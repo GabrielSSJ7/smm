@@ -13,6 +13,8 @@ module.exports = app =>
     app.route("/createnewuserpage").all(app.config.passport.authenticate()).post(app.components.pages.createNewUserPage);
     app.route("/subscribe").all(app.config.passport.authenticate()).post(app.components.pages.follow);
     app.route("/getallsubscribers").all(app.config.passport.authenticate()).get(app.components.pages.getAllSubscribers);
+    app.route("/getsubscribedpagesforchoosepage").all(app.config.passport.authenticate()).get(app.components.pages.searchPageSubscribed);
+    app.route("/searchPageForPost").all(app.config.passport.authenticate()).get(app.components.pages.searchPageForPost);
     //app.route("/createpost").all(app.config.passport.authenticate()).post(app.components.post.createPost);
 
     app.route("/createpostuser").all(app.config.passport.authenticate()).post(app.components.post.createPostUser);
@@ -33,4 +35,7 @@ module.exports = app =>
     app.route("/searchBar").post(app.components.post.searchBar);
 
     app.route("/searchadminforpage").all(app.config.passport.authenticate()).get(app.components.pages.searchUsersForAdminPage);
+
+
+    app.route("/loadCats").get(app.components.post.loadCats)
 }

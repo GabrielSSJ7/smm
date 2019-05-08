@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt-nodejs");
 const { authSecret } = require("../.env");
 const jwt = require("jwt-simple");
+const fs = require("fs");
+const path = './components/categorias.json';
 
 module.exports = app => {
   const {
@@ -42,7 +44,10 @@ module.exports = app => {
    */
   createPostUser = async (req, res) => {
     const data = req.body || null;
-    const token = jwt.decode(data.token, authSecret);
+    const token = jwt.decode(
+      req.get("Authorization").replace("bearer ", ""),
+      authSecret
+    );
 
     let arrayWithWords = data.titulo.match(/\S+/g);
     console.log(arrayWithWords);
@@ -131,10 +136,10 @@ module.exports = app => {
    */
   createPostUserPage = async (req, res) => {
     const data = req.body || null;
-    const token = jwt.decode(data.token, authSecret);
+    const token = jwt.decode(req.get("Authorization").replace("bearer ", ""), authSecret);
 
     let arrayWithWords = data.titulo.match(/\S+/g);
-    console.log(arrayWithWords);
+    console.log(token);
     let id_post = 0;
 
     data.keywords = data.keywords.concat(arrayWithWords);
@@ -888,7 +893,7 @@ module.exports = app => {
     }
   };
 
-  const insertComment = (res, data, table, token) => {
+  const insertComment = async (res, data, table, token) => {
     app
       .db(table)
       .insert({
@@ -896,10 +901,12 @@ module.exports = app => {
         id_post: data.id_post,
         comment: data.comment
       })
-      .then(_ => {
-        return res.sendStatus(200);
+      .then(async _ => {
+        const result =  await selectComments(data.id_post, data.type);
+        return res.json(result);
       })
       .catch(error => {
+        console.log(error);
         return res.status(500).send(error);
       });
   };
@@ -935,26 +942,42 @@ module.exports = app => {
     const option = req.query.option ||  null;
     const id_post = req.query.id_post || null;
   
-    let table = '';
-    switch(option) {
-      case 'up':
-      table = `SELECT id_user, comment, nick, foto, comments_user_page.created_at FROM comments_user_page JOIN usuario ON comments_user_page.id_user= usuario.id WHERE id_post = ${id_post}`
-      break;
+    const result = await selectComments(id_post, option);
 
-      case 'u':
-      table = `SELECT id_user, comment, nick, foto, comments_user.created_at FROM comments_user JOIN usuario ON comments_user.id_user= usuario.id WHERE id_post = ${id_post}`
-      break;
+    return res.json(result);
+   }
 
-      case 'm':
-      table = `SELECT id_user, comment, nick, foto, comments_meme_page.created_at FROM comments_meme_page JOIN usuario ON comments_meme_page.id_user= usuario.id WHERE id_post  = ${id_post}`
-      break;
+   const selectComments = async (id_post, option) => {
+      let table = '';
+      let tableCount = '';
+      switch(option) {
+        case 'up':
+        table = `SELECT count(comments_user_page.id) as count, id_user, comment, nick, foto, comments_user_page.created_at FROM comments_user_page JOIN usuario ON comments_user_page.id_user= usuario.id WHERE id_post = ${id_post} group by id_user,comment, comments_user_page.* ,nick, foto, comments_user_page.created_at order by comments_user_page ASC`
 
-    }
+        tableCount = `SELECT count(comments_user_page.id) as count FROM comments_user_page WHERE id_post = ${id_post}`
+        break;
 
-    const result = await app.db.raw(table);
-    console.log(req.query)
+        case 'u':
+        table = `SELECT count(comments_user.id) as count,id_user, comment, nick, foto, comments_user.created_at FROM comments_user JOIN usuario ON comments_user.id_user= usuario.id WHERE id_post = ${id_post} group by id_user,comment,  nick, foto, comments_user.*,comments_user.created_at order by comments_user ASC`
 
-    return res.json(result.rows);
+        tableCount = `SELECT count(comments_user.id) as count FROM comments_user WHERE id_post = ${id_post}`
+        break;
+
+        case 'm':
+        table = `SELECT count(comments_meme_page.id) as count, id_user, comment, nick, foto, comments_meme_page.created_at FROM comments_meme_page JOIN usuario ON comments_meme_page.id_user= usuario.id WHERE id_post  = ${id_post} group by id_user,comment, comments_meme_page.*, nick, foto, comments_meme_page.created_at
+        order by comments_meme_page ASC`
+
+        tableCount = `SELECT count(comments_meme_page.id) as count FROM comments_meme_page WHERE id_post = ${id_post}`
+        break;
+
+      }
+
+      
+      const countR = await app.db.raw(tableCount);
+      const result = await app.db.raw(table);
+      const finalResult  = { totalComments: countR.rows[0].count, id_post, dataComments: result.rows }
+      console.log(finalResult)
+      return finalResult
    }
  
   /*
@@ -1068,6 +1091,13 @@ module.exports = app => {
       return res.json(response);
   };
 
+  const loadCats = (req, res) => {
+    const fileBuffer = fs.readFileSync(path, 'utf-8');
+    const json = JSON.parse(fileBuffer)
+
+    return res.json(json);
+  }
+
   return {
     searchByPage,
     searchBar,
@@ -1079,6 +1109,7 @@ module.exports = app => {
     viewPost,
     allViewsOfPost,
     postDetails,
-    fetchComments
+    fetchComments,
+    loadCats
   };
 };

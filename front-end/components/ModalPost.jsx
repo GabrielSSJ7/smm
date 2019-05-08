@@ -10,12 +10,22 @@ import "../static/css/index.css";
 class ModalPost extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { nick: '', show: false, comment: "" }
+        this.state = { nick: '', show: false, comment: "", inputBorder: "1px solid lightgrey" }
     }
     componentDidMount() {
     }
-    insertComment(type, id, comment){
-        this.props.insertComment(type, id, comment)
+    insertComment(type, id, comment) {
+        if (this.state.comment != "") {
+            this.setState({
+                comment: "",
+                inputBorder: "1px solid lightgrey"
+            })
+            this.props.insertComment(type, id, comment)
+        } else { 
+            this.setState({
+                inputBorder: "1px solid red"
+            })
+        }
     }
 
     // handleClose() {
@@ -24,9 +34,8 @@ class ModalPost extends React.Component {
     //     })
 
     // }
-    render() {
-        console.log(this.props)
-        const { post } = this.props
+render() { 
+        const { post, comments } = this.props
         return (
             <Modal show={this.props.show} onHide={this.props.handleClose(false)}>                <Modal.Header closeButton>
                 <Modal.Title>Sauce</Modal.Title>
@@ -85,12 +94,23 @@ class ModalPost extends React.Component {
                         <div className="post-footer" style={{ marginTop: 15 }}>
                             <div style={{ zIndex: "9999999" }}>
                                 <button onClick={() => { }}>
-                                    <i className="fas fa-comment-alt" /> <span>{post.comments} Comments</span>
+                                    <i className="fas fa-comment-alt" /> <span>{comments.totalComments} Comments</span>
                                 </button>
                             </div>
                             <div style={{ display: "flex", flexDirection: "column" }}><div style={{ display: "flex", flexDirection: "row" }}>
-                                <input onChange={e => this.setState({ comment: e.target.value })} placeholder="Comente algo..." className="form-control input-comment" />
-                                <button onClick={() => this.insertComment(post.type, post.id, this.state.comment)} className="btn btn-default btn-comments-send"><i className="far fa-paper-plane"></i></button>
+                                <input 
+                                    style={{ border: this.state.inputBorder}}
+                                    value={this.state.comment}
+                                    onChange={e => this.setState({ comment: e.target.value })} 
+                                    placeholder="Comente algo..." 
+                                    className="form-control input-comment"
+                                 />
+                                <button
+                                    onClick={() => this.insertComment(post.type, post.id, this.state.comment)} 
+                                    className="btn btn-default btn-comments-send"
+                                >
+                                    <i className="far fa-paper-plane"></i>
+                                </button>
 
                             </div>
                                 <div>
@@ -105,20 +125,23 @@ class ModalPost extends React.Component {
     }
 
     renderPostComments() {
-        if (this.props.comments) {
+        console.log(Object.keys(this.props.comments).length)
+        if (Object.keys(this.props.comments).length > 0) {
+            const commentsList = this.props.comments.dataComments
+        
             let list = []
-            for (let index = 0; index < this.props.comments.length; index++) {
+            for (let index = 0; index < commentsList.length; index++) {
                 list.push(
                     <div style={{ display: "flex", flexDirection: "column", margin: 10 }} key={index}>
                         <div style={{ display: "flex", flexDirection: "row" }}>
                             <div className="post-div-circle" style={{ borderRadius: "100%" }}>
                                 <Image
-                                    src={this.props.comments[index].foto}
+                                    src={commentsList[index].foto}
                                 />
                             </div>
-                            <p style={{ marginLeft: "2%", marginTop: 16 }} ><strong>{this.props.comments[index].nick}</strong>  {this.props.comments[index].comment}</p>
+                            <p style={{ marginLeft: "2%", marginTop: 16 }} ><strong>{commentsList[index].nick}</strong>  {commentsList[index].comment}</p>
                         </div>
-                        
+
                     </div>
                 )
             }

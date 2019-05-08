@@ -16,7 +16,21 @@ __webpack_require__.r(__webpack_exports__);
 var INITIAL_STATE = {
   posts: [],
   vote: {},
-  comments: []
+  comments: [],
+  pagesSubscribed: [],
+  pagesForPost: [],
+  result: null,
+  uploadProgress: 0,
+  //NEW POST
+  postStatus: false,
+  postTrigger: false,
+  idPageSelected: 0,
+  titulo: "",
+  descricao: "",
+  keywords: [],
+  categorias: [],
+  isYourProfile: false,
+  mediaForUpload: null
 };
 /* harmony default export */ __webpack_exports__["default"] = (function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_STATE;
@@ -36,6 +50,67 @@ var INITIAL_STATE = {
     case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_POST_COMMENTS:
       return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
         comments: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_SUBSCRIBED_PAGES:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        pagesSubscribed: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_PAGES_FOR_POST:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        pagesForPost: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].POST_SUCCESS:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        result: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].UPLOAD_PROGRESS:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        uploadProgress: action.payload //NEW POST
+
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_ID_USER_PAGE:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        idPageSelected: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_TITLE:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        titulo: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_DESCRIPTION:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        descricao: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_KEYWORDS:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        keywords: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_CATEGORIES:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        categorias: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_ISYOURPROFILE:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        isYourProfile: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_MEDIA_UPLOAD:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        mediaForUpload: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_NEW_POST_TRIGGER:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        postTrigger: action.payload
       });
 
     default:
@@ -205,6 +280,7 @@ var actionTypes = {
   MUDA_EMAIL: "muda_email",
   MUDA_SENHA: "muda_senha",
   URL: "http://localhost:4000/",
+  // URL: "https://smm-back.herokuapp.com/",
   CADASTRADO_SUCESSO: "CADASTRADO_SUCESSO",
   CADASTRADO_ERRO: "cadastro_erro",
   CADASTRO_APELIDO: "cadastro_apelido",
@@ -213,9 +289,22 @@ var actionTypes = {
   LOGIN_FACEBOOK_SUCESSO: "LOGIN_FACEBOOK_SUCESSO",
   MUDA_NICKNAME: "muda_nickname",
   TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO",
+  FETCH_SUBSCRIBED_PAGES: "fetchsubscribedpages",
+  FETCH_PAGES_FOR_POST: "uhsaushauhs",
   FETCH_POSTS_SEARCH_BAR_SUCESSO: "fetchpostssearchbarsucesso",
   UP_OR_DOWN_VOTE: "upordownvote",
-  FETCH_POST_COMMENTS: "fetchpostcomments"
+  FETCH_POST_COMMENTS: "fetchpostcomments",
+  POST_SUCCESS: "suhdaus",
+  UPLOAD_PROGRESS: "UPLOADFJASIJF",
+  //NEW POST 
+  CHANGE_NEW_POST_ID_USER_PAGE: "changeiduserpage",
+  CHANGE_NEW_POST_TITLE: "changenewpostitle",
+  CHANGE_NEW_POST_DESCRIPTION: "changenewpsotdescription",
+  CHANGE_NEW_POST_CATEGORIES: "changenewpostcategories",
+  CHANGE_NEW_POST_KEYWORDS: "CHANGEnewpostkeywords",
+  CHANGE_NEW_POST_ISYOURPROFILE: "changenewpostisyourprofile",
+  CHANGE_NEW_POST_MEDIA_UPLOAD: "changenewpostmediaupload",
+  CHANGE_NEW_POST_TRIGGER: "changenewujshfu"
 };
 var FACEBOOK_PROFILE_PIC_URL = function FACEBOOK_PROFILE_PIC_URL(userId) {
   return "https://graph.facebook.com/".concat(userId, "/picture?type=large");

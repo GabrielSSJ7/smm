@@ -156,18 +156,28 @@ export default class Post extends React.Component {
                   this.setState({ formComments: true, post: postsArray[index] })
                 }
               }}>
-                <i className="fas fa-comment-alt" /> <span>{postsArray[index].comments} Comments</span>
+                <i className="fas fa-comment-alt" /> <span>{this.renderCountComments(postsArray[index])} Comments</span>
               </button>
             </div>
 
           </div>
         </div>
       );
-
-
     }
-
     return posts;
+  }
+
+  renderCountComments(post){
+    if( Object.keys(this.props.comments).length == 0){
+      return post.comments
+    } else {
+      if(post.id == this.props.comments.id_post){
+        return this.props.comments.totalComments
+      } else {
+        return post.comments
+      }
+    }
+   
   }
 
   renderFormComments(post) {

@@ -4,12 +4,15 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start -p $PORT",
+    "heroku-postbuild": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "firebase": "^5.10.0",
     "next": "latest",
     "next-images": "^1.0.4",
     "react": "next",

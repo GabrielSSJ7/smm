@@ -29,7 +29,7 @@
           .querySelectorAll("link[href][rel=stylesheet]")
           .forEach(function(link) {
             if (!link.href.match(prefix) || link.stale) return;
-            injectCss(link, link.href.split("?")[0] + "?unix=1554734208885");
+            injectCss(link, link.href.split("?")[0] + "?unix=1557272504289");
           });
       }
     }
@@ -66,7 +66,7 @@
           .querySelectorAll("link[href][rel=stylesheet]")
           .forEach(function(link) {
             if (!link.href.match(prefix) || link.stale) return;
-            injectCss(link, link.href.split("?")[0] + "?unix=1554734208893");
+            injectCss(link, link.href.split("?")[0] + "?unix=1557272504297");
           });
       }
     }
@@ -74,10 +74,10 @@
 
 /***/ }),
 
-/***/ "./static/css/post.css":
-/*!*****************************!*\
-  !*** ./static/css/post.css ***!
-  \*****************************/
+/***/ "./static/css/new-post.css":
+/*!*********************************!*\
+  !*** ./static/css/new-post.css ***!
+  \*********************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -103,7 +103,7 @@
           .querySelectorAll("link[href][rel=stylesheet]")
           .forEach(function(link) {
             if (!link.href.match(prefix) || link.stale) return;
-            injectCss(link, link.href.split("?")[0] + "?unix=1554736157431");
+            injectCss(link, link.href.split("?")[0] + "?unix=1557272517807");
           });
       }
     }
