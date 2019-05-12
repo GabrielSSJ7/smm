@@ -1,3 +1,13 @@
+@media only screen and (max-width: 960px)
+ {
+     .mr-auto{
+         display: flex !important;
+         flex-direction: row;
+         width: 100% !important;
+         margin-top: 10px !important;
+     }
+ }
+
 #search-input {
     border-right: none;
     border-top-right-radius: 0;

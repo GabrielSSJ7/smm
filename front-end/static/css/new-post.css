@@ -1,14 +1,22 @@
+/*   background: rgb(26, 26, 27); */
+
 #element-choose-page {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  border: 1px solid black;
+  border: 1px solid lightgrey;
   border-radius: 40px;
+  background: rgb(26, 26, 27);
+  color: white;
 }
 
+.div-keywords {
+  background: rgb(26, 26, 27); 
+}
 
 .with-input-choose-list {
+  
     border-bottom: none !important ;
     border-top-left-radius: 5px !important;
     border-top-right-radius: 5px !important;
@@ -18,15 +26,18 @@
 }
 
 #list-choose-page {
-    border: 1px solid black;
+    border: 1px solid lightgray;
     border-radius: 5px !important;
     border-top-left-radius: 0px !important;
     border-top-right-radius: 0px !important;
     position: absolute;
     width: 290px;
     z-index: 9;
-    background-color: white;
+    background: rgb(26, 26, 27);
+    color: white
 }
+
+
 
 .page-item {
     padding: 10px;
@@ -70,15 +81,16 @@
 
 #img-choose-page {
   width: 50px;
-  height: 35px;
+  height: 50px;
   margin: 0 10px;
-  border: 1px dotted black;
+  border: 1px dotted white;
   border-radius: 50%;
   padding: 5px;
 }
 
 #text-choose-page {
-  width: 100%;
+  font-size: 15px;
+
 }
 
 #text-choose-page p {
@@ -93,25 +105,37 @@
 #input-choose-page {
   border: none;
   outline: none;
+  background: rgb(26, 26, 27);
 }
 
+
 .post-div-circle {
-    background-color: #aaa;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-  }
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 50%;
+  cursor: pointer;
+}
 
   .post-div-circle-selected {
     background-color: #aaa;
-    border-radius: 50%;
-    width: 115px;
+    
+    width: 50px;
     margin: 0 10px;
-    height: 50px;
     overflow: hidden;
     position: relative;
+    
+    display: inline-block;
+    
+    height: 50px;
+    
+    background-position: 50% 50%;
+    background-size: cover;
+    border-radius: 50%;
+    cursor: pointer;
   }
 
   .imageUp{
@@ -131,7 +155,9 @@
   }
 
 
-
+#input-choose-page {
+  color: white
+}
 #input-choose-page::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
   font-size: 14px;
@@ -168,9 +194,10 @@
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  
+  background: rgb(26, 26, 27);
+  color: lightgray;
   border:none;
-  padding: 0 10px;
+  padding: 10px 10px;
 }
 
 #span-media {
@@ -203,7 +230,7 @@
   flex-direction: row;
   justify-content: space-between;
   color: white;
-  width: 20%;
+ align-items: center
 }
 
 #element-choose-cat {
@@ -212,6 +239,9 @@
   border: 1px solid lightgrey;
   padding: 10px;
   border-radius: 15px;
+  background: rgb(26, 26, 27);
+  color: white
+  
 }
 
 #element-choose-cat-focus {

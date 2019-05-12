@@ -12,7 +12,7 @@ module.exports = app =>
     app.route("/createnewmemepage").all(app.config.passport.authenticate()).post(app.components.pages.createNewMemePage);
     app.route("/createnewuserpage").all(app.config.passport.authenticate()).post(app.components.pages.createNewUserPage);
     app.route("/subscribe").all(app.config.passport.authenticate()).post(app.components.pages.follow);
-    app.route("/getallsubscribers").all(app.config.passport.authenticate()).get(app.components.pages.getAllSubscribers);
+    app.route("/getallsubscribers").get(app.components.pages.getAllSubscribers);
     app.route("/getsubscribedpagesforchoosepage").all(app.config.passport.authenticate()).get(app.components.pages.searchPageSubscribed);
     app.route("/searchPageForPost").all(app.config.passport.authenticate()).get(app.components.pages.searchPageForPost);
     //app.route("/createpost").all(app.config.passport.authenticate()).post(app.components.post.createPost);

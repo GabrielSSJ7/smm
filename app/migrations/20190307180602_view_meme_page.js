@@ -23,6 +23,6 @@ exports.up = function(knex, Promise) {
   };
   
   exports.down = function(knex, Promise) {
-    return knex.schema.dropTable("view_meme_page");
+    return knex.schema.dropTableIfExists("view_meme_page");
   };
   

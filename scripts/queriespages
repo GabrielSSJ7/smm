@@ -1,0 +1,44 @@
+SELECT DISTINCT
+      user_page.id, 
+      user_page.nome, 
+      user_page.midia,
+      user_page.descricao, 
+	  (select subscribe_user_page.id from subscribe_user_page where subscribe_user_page.id_user = 4) as sub,
+	  (select count(subscribe_user_page.id_user) from subscribe_user_page) as qtde_subs,
+      usuario.nick FROM keywords 
+      INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id 
+      INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page 
+      INNER JOIN usuario ON usuario.id = user_page.id_criador 
+      WHERE keywords.keyword ILIKE '%A%'
+	  
+	  SELECT DISTINCT
+            user_page.id, 
+            user_page.nome, 
+            user_page.midia, 
+            user_page.descricao, 
+            (select subscribe_user_page.id from subscribe_user_page where subscribe_user_page.id_user = usuario.id) as sub,
+	          (select count(subscribe_user_page.id_user) from subscribe_user_page) as qtde_subs,
+            usuario.nick FROM keywords 
+            INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id 
+            INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page 
+            INNER JOIN usuario ON usuario.id = user_page.id_criador 
+            WHERE keywords.keyword ILIKE '%A%'
+			
+			
+		SELECT DISTINCT
+            user_page.id,
+            user_page.nome,
+            user_page.midia,
+            user_page.descricao,
+            (select subscribe_user_page.id from subscribe_user_page where subscribe_user_page.id_user = 4 
+			 and subscribe_user_page.id_page = user_page.id) as sub,
+            (select count(subscribe_user_page.id_user) from subscribe_user_page where subscribe_user_page.id_page = user_page.id) 
+			as qtde_subs,
+            usuario.nick FROM keywords
+            INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id
+            INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page
+            INNER JOIN usuario ON usuario.id = user_page.id_criador  WHERE keywords.keyword  ILIKE '%d%'
+	  
+	  
+	  select * from subscribe_user_page where subscribe_user_page.id_user = 4
+	  select * from usuario where id = 4

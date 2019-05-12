@@ -1,3 +1,7 @@
+body {
+    background: black
+}
+
 .fa-facebook-f {
     -webkit-filter: invert(100%)
 }
@@ -24,12 +28,17 @@
     width: 50%;
 }
 
-.post-header {
-    border-bottom: 1px solid;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    padding-bottom: 10px;
-}
+
+@media only screen and (max-width: 960px)
+ {
+     .mr-auto{
+         display: flex !important;
+         flex-direction: row;
+         width: 100% !important;
+         margin-top: 10px !important;
+     }
+ }
+
 #search-input {
     border-right: none;
     border-top-right-radius: 0;
@@ -87,7 +96,158 @@
 .nav-dropdown-item:hover {
     color: orange
 }
-#element-choose-page {
+/*   background: rgb(26, 26, 27); */
+
+.post {
+  margin-bottom: 50px;
+  /* border: 1px solid orange; */
+  padding: 20px;
+  background: rgb(26, 26, 27);
+}
+
+.post-header {
+  border-bottom: 1px solid orange;
+  padding-bottom: 10px;
+  color: white !important;
+}
+
+.post-body {
+  color: white !important;
+}
+
+.post-div-updownvote {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-right: 10px
+}
+
+.post-div-updownvote button {
+  background: none;
+  border: none;
+  /* margin: 0 auto; */
+}
+
+.post-div-updownvote button:hover {
+  color: orange;
+}
+
+.post-div-updownvote p {
+  margin: 0;
+}
+
+.post-div-page-autor{ 
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.post-div-autor {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+.post-div-autor p {
+  margin-left: 10px
+}
+
+.post-div-page{
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+
+.post-div-page .post-div-circle {
+  width: 30px;
+  height: 30px;
+}
+
+.post-div-page p {
+  font-size: 10px;
+
+}
+
+.post-footer button {
+  background: none;
+  border: none;
+  margin: 0 auto;
+  padding: 5px;
+  color: white;
+}
+
+.post-footer button:hover {
+  background: white;
+  color: black;
+  border-radius: 10px;
+}
+
+/* .post-div-circle {
+  background-color: #aaa;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+} */
+
+.post-div-circle {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.post-div-circle:hover {
+  opacity: 0.5;
+}
+
+.post-div-circle img {
+  position: absolute;
+  /* bottom: 0; */
+  width: 100%;
+}
+
+.btn-upvote {
+  width: 10px !important;
+  padding: 0 !important;
+}
+
+.btn-downvote {
+  width: 10px !important;
+  padding: 0 !important;
+}
+
+.btn-comments-send:hover {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
+
+.input-comment {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.post-nick {
+  margin-left: 2%;
+  margin-top: 16;
+  margin-bottom: 0 !important;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: center;
+}
+
+.post-nick:hover {
+  font-weight: 400;
+}
+
+.img-choose-page {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -96,257 +256,65 @@
   border-radius: 40px;
 }
 
-
-.with-input-choose-list {
-    border-bottom: none !important ;
-    border-top-left-radius: 5px !important;
-    border-top-right-radius: 5px !important;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-    
-}
-
-#list-choose-page {
-    border: 1px solid black;
-    border-radius: 5px !important;
-    border-top-left-radius: 0px !important;
-    border-top-right-radius: 0px !important;
-    position: absolute;
-    width: 290px;
-    z-index: 9;
-    background-color: white;
-}
-
-.page-item {
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-bottom: 1px solid grey;
-}
-
-.heightMedia {
-  height: 50vh;
-  border: 1px dotted black !important;
-}
-
-#your-profile {
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-bottom: 1px solid grey;
-}
-
-#your-profile:hover{
-    background-color: black;
-    color: white;
-    cursor: pointer
-}
-
-.page-item:hover{
-    background-color: black;
-    color: white;
-    cursor: pointer
-}
-
-.line {
-    width: 100%;
-    border-bottom: 1px solid grey;
-    height: 2px;
-    padding: 0 15px;
-}
-
-#img-choose-page {
+.page-div-circle {
+  display: inline-block;
   width: 50px;
-  height: 35px;
-  margin: 0 10px;
-  border: 1px dotted black;
+  height: 50px;
+  background: url(https://www.facebook.com/images/fb_icon_325x325.png);
+  background-position: 50% 50%;
+  background-size: cover;
   border-radius: 50%;
-  padding: 5px;
+  margin-right: 15px;
+  margin-bottom: 20px;
 }
 
-#text-choose-page {
-  width: 100%;
-}
-
-#text-choose-page p {
-  margin: 0;
-}
-
-#arrow-choose-page {
-  padding: 0 15px;
+ .hover {
   cursor: pointer;
 }
 
-#input-choose-page {
-  border: none;
-  outline: none;
+ .hover:hover {
+  background-color: #444;
+  opacity: 0.5;
 }
 
-.post-div-circle {
-    background-color: #aaa;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .post-div-circle-selected {
-    background-color: #aaa;
-    border-radius: 50%;
-    width: 115px;
-    margin: 0 10px;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .imageUp{
-    display: none;
-  }
-  
-  .post-div-circle-selected img {
-    position: absolute;
-    /* bottom: 0; */
-    width: 100%;
-  }
-  
-  .post-div-circle img {
-    position: absolute;
-    /* bottom: 0; */
-    width: 100%;
-  }
-
-
-
-#input-choose-page::-webkit-input-placeholder {
-  /* Chrome/Opera/Safari */
-  font-size: 14px;
-}
-#input-choose-page::-moz-placeholder {
-  /* Firefox 19+ */
-  font-size: 14px;
-}
-#input-choose-page:-ms-input-placeholder {
-  /* IE 10+ */
-  font-size: 14px;
-}
-#input-choose-page:-moz-placeholder {
-  /* Firefox 18- */
-  font-size: 14px;
+.page-name {
+    color: white;
+    font-size: 13px;
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-#input-choose-page:focus {
-  border: none;
+.page-name:hover {
+  font-weight: 400;
 }
 
-#div-input-title {
-  width: 100%;
+.page-description {
+  font-size: 11px;
 }
 
-#input-title {
-  width: 100%;
+.page-sub-button {
+    font-size: 14px;
 }
 
-#element-media {
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  
-  border:none;
-  padding: 0 10px;
+.page-subs {
+  font-size: 11px
 }
 
-#span-media {
-  margin-right: 10px;
-}
-
-#row-btns-options {
-  position: relative;
-}
-
-#btns-options-btn-group {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-#btns-options-btn-group button {
-}
-
-#form-new-post .row {
-  margin-bottom: 25px;
-}
-
-
-.keyword-line {
-  margin-left: 1px;
-  padding: 0 5px;
-  background: green;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  color: white;
-  width: 20%;
-}
-
-#element-choose-cat {
-  display: flex;
-  flex-direction: row;
-  border: 1px solid lightgrey;
-  padding: 10px;
-  border-radius: 15px;
-}
-
-#element-choose-cat-focus {
-  display: flex;
-  flex-direction: row;
-  border-top: 1px solid lightgray;
-  border-left: 1px solid lightgray;
-  border-right: 1px solid lightgray;
-  padding: 10px;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  
-}
-
-#input-filter-categories {
-  border: none;
-  outline: none;
-}
-
-#list-cats {
-  border: 1px solid black;
-  border-radius: 5px !important;
-  border-top-left-radius: 0px !important;
-  border-top-right-radius: 0px !important;
-  position: absolute;
-  width: 240px;
-  height: 200px;
-overflow: auto;
-  z-index: 9;
-  background-color: white;
-}
-
-
-.cat {
-  padding: 10px;
+.page-search-item {
     display: flex;
     flex-direction: row;
     align-items: center;
-    border-bottom: 1px solid grey;
+    justify-content: space-between;
+    color: lightgrey
 }
 
-
-.cat:hover{
-  background-color: black;
-  color: white;
-  cursor: pointer
+.page-img-and-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
+
 
 /*# sourceMappingURL=styles.chunk.css.map*/

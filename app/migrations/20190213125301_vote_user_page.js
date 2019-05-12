@@ -24,6 +24,6 @@ exports.up = function(knex, Promise) {
   }; 
   
   exports.down = function(knex, Promise) {
-      return knex.schema.dropTable("vote_user_page");
+      return knex.schema.dropTableIfExists("vote_user_page");
   };
   

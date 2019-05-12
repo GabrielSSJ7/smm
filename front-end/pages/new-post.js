@@ -1,5 +1,4 @@
 import React from "react";
-import Axios from "axios";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
 import {
@@ -14,10 +13,11 @@ import {
   changeNewPostKeywords,
   changeNewPostDescription,
   changeNewPostMediaUpload,
-  changeNewPostTrigger
+  changeNewPostTrigger,
+  changeUploadProgress
 } from "../config/actions/PostsActions";
 import Template from "../components/Template";
-import { Button, Image } from "react-bootstrap";
+import { Button, Alert } from "react-bootstrap";
 
 import "../static/css/index.css";
 import "../static/css/new-post.css";
@@ -33,7 +33,8 @@ class NewPostUser extends React.Component {
     super(props);
     this.state = {
       localStorage: {},
-
+      alert: false,
+      alertMsg: "",
       idPageSelected: null
     };
   }
@@ -46,8 +47,16 @@ class NewPostUser extends React.Component {
   }
 
   _toPost() {
-    this.props.changeNewPostTrigger(true);
-    if (this.props.mediaForUpload) {
+     if (!this.props.titulo) {
+      this.setState({ alert: true, alertMsg: "Precisa de título, man" })
+    } else if(this.props.keywords.length == 0) {
+      this.setState({ alert: true, alertMsg: "Precisa de umas keywords e pá" })
+    } else  if(this.props.categorias.length == 0) {
+      this.setState({ alert: true, alertMsg: "Escolhe uma categoria parça" })
+    } else  if (!this.props.mediaForUpload){
+      this.setState({ alert: true, alertMsg: "E a mídia???" })
+    } else {
+      this.props.changeNewPostTrigger(true);
       const data = {
         titulo: this.props.titulo,
         descricao: this.props.descricao,
@@ -57,65 +66,89 @@ class NewPostUser extends React.Component {
         categorias: this.props.categorias,
         isYourProfile: this.props.isYourProfile
       };
-      this.props.toPost(this.props.mediaForUpload, data);
-    }
+     this.props.toPost(this.props.mediaForUpload, data);
+    } 
+    //   let a = this.props.changeUploadProgress ;
+    //   for (let i=1; i<101; i++) {
+    //     setTimeout( function timer(){
+    //       a(i);
+    //     }, i*500 );
+    //   }
   }
 
   render() {
     return (
       <Template>
         <NavBar />
-        { this.props.postTrigger ? <Uploading uploadProgress={this.props.uploadProgress} /> :
-        <div id="form-new-post" className="container" style={{ marginTop: 45 }}>
-          {/* CHOOSE PAGE  */}
-          <PagePost
-            changeNewPostIdUserPage={this.props.changeNewPostIdUserPage}
-            changeNewPostIsYourProfile={this.props.changeNewPostIsYourProfile}
-            fetchPagesForPost={() => this.props.fetchPagesForPost}
-            pagesSubscribed={this.props.pagesSubscribed}
-            localStorage={this.state.localStorage}
-          />
-          {/* --- */}
+        {this.props.postTrigger ? (
+          <Uploading uploadProgress={this.props.uploadProgress} />
+        ) : (
+          <div
+            id="form-new-post"
+            className="container"
+            style={{ marginTop: 45 }}
+          >
+            {this.props.result ? (
+              <Alert variant="success">
+                Conteúdo postado com sucesso
+              </Alert>
+            ) : (
+              ""
+            )}
+            
+            {/* CHOOSE PAGE  */}
+            <PagePost
+              changeNewPostIdUserPage={this.props.changeNewPostIdUserPage}
+              changeNewPostIsYourProfile={this.props.changeNewPostIsYourProfile}
+              fetchPagesForPost={this.props.fetchPagesForPost}
+              pagesSubscribed={this.props.pagesSubscribed}
+              localStorage={this.state.localStorage}
+              pagesForPost={this.props.pagesForPost}
+            />
+            {/* --- */}
 
-          {/* INPUTS */}
-          <Inputs
-            changeNewPostTitle={this.props.changeNewPostTitle}
-            changeNewPostDescription={this.props.changeNewPostDescription}
-            changeNewPostKeywords={this.props.changeNewPostKeywords}
-            changeNewPostCategories={this.props.changeNewPostCategories}
-          />
-          {/* ---  */}
-          <div className="row" />
+            {/* INPUTS */}
+            <Inputs
+              changeNewPostTitle={this.props.changeNewPostTitle}
+              changeNewPostDescription={this.props.changeNewPostDescription}
+              changeNewPostKeywords={this.props.changeNewPostKeywords}
+              changeNewPostCategories={this.props.changeNewPostCategories}
+            />
+            {/* ---  */}
+            <div className="row" />
 
-          {/* UPLOAD IMAGE  */}
-          <ImageUpload
-            changeNewPostMediaUpload={this.props.changeNewPostMediaUpload}
-          />
-          {/* --- */}
+            {/* UPLOAD IMAGE  */}
+            <ImageUpload
+              changeNewPostMediaUpload={this.props.changeNewPostMediaUpload}
+            />
+            {/* --- */}
+            {
+              this.state.alert ? (<Alert variant="danger">{this.state.alertMsg}</Alert>) : ""
+            }
+            {/* BOTÕES  */}
+            <div className="row" id="row-btns-options">
+              <div id="btns-options-options-group">
+                <Button>+Spoiler</Button>
+              </div>
 
-          {/* BOTÕES  */}
-          <div className="row" id="row-btns-options">
-            <div id="btns-options-options-group">
-              <Button>+Spoiler</Button>
+              <div id="btns-options-btn-group">
+                <Button>Cancelar</Button>
+                <Button onClick={() => this._toPost()}>Post</Button>
+              </div>
             </div>
-
-            <div id="btns-options-btn-group">
-              <Button>Cancelar</Button>
-              <Button onClick={() => this._toPost()}>Post</Button>
-            </div>
+            {/* --- */}
+           
           </div>
-          {/* --- */}
-        </div>
-        }
+        )}
       </Template>
     );
   }
 }
 
 const mapStateToProps = state => {
-  console.log('====================================');
+  console.log("====================================");
   console.log("new-post => ", state.PostsReducer.uploadProgress);
-  console.log('====================================');
+  console.log("====================================");
   return {
     pagesSubscribed: state.PostsReducer.pagesSubscribed,
     pagesForPost: state.PostsReducer.pagesForPost,
@@ -127,7 +160,8 @@ const mapStateToProps = state => {
     isYourProfile: state.PostsReducer.isYourProfile,
     mediaForUpload: state.PostsReducer.mediaForUpload,
     postTrigger: state.PostsReducer.postTrigger,
-    uploadProgress: state.PostsReducer.uploadProgress
+    uploadProgress: state.PostsReducer.uploadProgress,
+    result: state.PostsReducer.result
   };
 };
 
@@ -145,7 +179,8 @@ export default withRouter(
       changeNewPostKeywords,
       changeNewPostDescription,
       changeNewPostMediaUpload,
-      changeNewPostTrigger
+      changeNewPostTrigger,
+      changeUploadProgress
     }
   )(NewPostUser)
 );

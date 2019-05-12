@@ -139,12 +139,12 @@ module.exports = app => {
     const token = jwt.decode(req.get("Authorization").replace("bearer ", ""), authSecret);
 
     let arrayWithWords = data.titulo.match(/\S+/g);
-    console.log(token);
+    
     let id_post = 0;
 
     data.keywords = data.keywords.concat(arrayWithWords);
 
-    console.log(data.keywords);
+    console.log(data);
 
     try {
       existsOrError(
@@ -416,7 +416,9 @@ module.exports = app => {
     let userPageResult = [];
     let a = 0;
     let sqlUserPageQuery =
-      `SELECT DISTINCT post_user_page.titulo, post_user_page.descricao, post_user_page.midia, post_user_page.id, post_user_page.id_user_page, 
+      `SELECT DISTINCT 
+      user_page.midia as page_midia, user_page.nome as page_name, user_page.id as page_id, 
+      post_user_page.titulo, post_user_page.descricao, post_user_page.midia, post_user_page.id, post_user_page.id_user_page, 
       (SELECT up FROM vote_user_page where id_user = ${user ? user.id : null} and id_post = post_user_page.id) as up_on,
       (SELECT down FROM vote_user_page where id_user = ${user ? user.id : null} and id_post = post_user_page.id) as down_on,
       (SELECT count(comment) as comments FROM comments_user_page WHERE id_post = post_user_page.id),
@@ -443,7 +445,7 @@ module.exports = app => {
     sqlUserPageQueryWhere += ")";
 
     sqlUserPageQueryWhere +=
-      " GROUP BY post_user_page.titulo, usuario.nick, usuario.foto, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at " +
+      " GROUP BY post_user_page.titulo, usuario.nick, usuario.foto, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome,user_page.id  " +
       orderBy;
    //console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
     await app.db
@@ -470,9 +472,9 @@ module.exports = app => {
           }
 
           sqlUserPageQueryWhere +=
-            " GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page, usuario.nick, usuario.foto,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at " +
-            orderBy;
-          //  console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
+            ` OR post_user_page.titulo ILIKE '${searchWords}%' GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page, usuario.nick, usuario.foto,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome, user_page.id 
+            ${orderBy}`;
+          //console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
           await app.db
             .raw(sqlUserPageQuery + sqlUserPageQueryWhere)
             .then(result => {
@@ -496,7 +498,9 @@ module.exports = app => {
     let memePageResult = [];
 
     let sqlMemeQuery =
-      `SELECT DISTINCT post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, post_meme_page.id_meme_page, post_meme_page.id,
+      `SELECT DISTINCT 
+      meme_page.midia as page_midia, meme_page.nome as page_name, meme_page.id as page_id, 
+      post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, post_meme_page.id_meme_page, post_meme_page.id,
       (SELECT up FROM vote_meme_page where id_user = ${user ? user.id : null} and id_post = post_meme_page.id) as up_on,
       (SELECT count(comment) as comments FROM comments_meme_page WHERE id_post = post_meme_page.id),
       (SELECT down FROM vote_meme_page where id_user = ${user ? user.id : null} and id_post = post_meme_page.id) as down_on,
@@ -519,8 +523,8 @@ module.exports = app => {
     }
     sqlMemeQueryWhere += ") ";
     sqlMemeQueryWhere +=
-      " GROUP BY post_meme_page.id_meme_page, usuario.foto, usuario.nick, post_meme_page.id,post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword,post_meme_page.created_at " +
-      orderBy;
+      ` GROUP BY  meme_page.midia, meme_page.nome, meme_page.id, post_meme_page.id_meme_page, usuario.foto, usuario.nick, post_meme_page.id,post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword,post_meme_page.created_at
+      ${orderBy}`;
       //console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
     await app.db
       .raw(sqlMemeQuery + sqlMemeQueryWhere)
@@ -545,9 +549,9 @@ module.exports = app => {
             a++;
           }
           sqlMemeQueryWhere +=
-            " GROUP BY post_meme_page.id_meme_page, post_meme_page.titulo, usuario.nick, usuario.foto, post_meme_page.id,post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword, post_meme_page.created_at " +
-            orderBy;
-            //console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
+             ` OR post_meme_page.titulo ILIKE '${searchWords}%'  GROUP BY  meme_page.midia, meme_page.nome, meme_page.id,post_meme_page.id_meme_page, post_meme_page.titulo, usuario.nick, usuario.foto, post_meme_page.id,post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword, post_meme_page.created_at 
+            ${orderBy}`;
+           // console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
           await app.db
             .raw(sqlMemeQuery + sqlMemeQueryWhere)
             .then(result => {
@@ -573,7 +577,7 @@ module.exports = app => {
       `SELECT DISTINCT post_user.titulo, post_user.descricao, post_user.midia, post_user.id, post_user.id_criador, 
       (SELECT up FROM vote_user where id_user = ${user ? user.id : null} and id_post = post_user.id) as up_on,
       (SELECT down FROM vote_user where id_user = ${user ? user.id : null} and id_post = post_user.id) as down_on,
-      (SELECT count(comment) as comments FROM comments_user WHERE id_post = comments_user.id),
+      (SELECT count(comment) as comments FROM comments_user WHERE id_post = post_user.id),
       (SELECT count(up) FROM vote_user where id_post = post_user.id) as upvote,
       post_user.created_at,usuario.nick, usuario.foto FROM post_user 
       full JOIN usuario ON post_user.id_criador = usuario.id 
@@ -596,8 +600,8 @@ module.exports = app => {
 
     sqlUserQueryWhere += ") ";
     sqlUserQueryWhere +=
-      " GROUP BY post_user.titulo, post_user.descricao, usuario.nick, usuario.foto,post_user.midia, post_user.id, post_user.id_criador, keywords_post_user.keyword, post_user.created_at " +
-      orderBy;
+      `   GROUP BY post_user.titulo, post_user.descricao, usuario.nick, usuario.foto,post_user.midia, post_user.id, post_user.id_criador, keywords_post_user.keyword, post_user.created_at 
+      ${orderBy} `;
       //console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
     await app.db
       .raw(sqlUserQuery + sqlUserQueryWhere)
@@ -622,9 +626,9 @@ module.exports = app => {
           }
 
           sqlUserQueryWhere +=
-            " GROUP BY post_user.titulo, post_user.descricao, post_user.midia,usuario.nick, usuario.foto,post_user.id, post_user.id_criador,  keywords_post_user.keyword, post_user.created_at " +
-            orderBy;
-           // console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
+            ` OR post_user.titulo ILIKE '${searchWords}%' GROUP BY post_user.titulo, post_user.descricao, post_user.midia,usuario.nick, usuario.foto,post_user.id, post_user.id_criador,  keywords_post_user.keyword, post_user.created_at 
+            ${orderBy}`;
+         //   console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
           await app.db
             .raw(sqlUserQuery + sqlUserQueryWhere)
             .then(result => {
@@ -649,21 +653,21 @@ module.exports = app => {
 
     switch (order) {
       case "upvote":
-        console.log("***ORDENANDO POR UPVOTES***");
+        // console.log("***ORDENANDO POR UPVOTES***");
         arrayMerged.sort(function(a, b) {
           return b.upvote.localeCompare(a.upvote);
         });
         break;
 
       case "new":
-        console.log("***ORDENANDO PELA DATA***");
+        // console.log("***ORDENANDO PELA DATA***");
         arrayMerged.sort(function(a, b) {
           return new Date(b.created_at) - new Date(a.created_at);
         });
         break;
 
       default:
-        console.log("***ORDENANDO POR UPVOTES default***");
+        // console.log("***ORDENANDO POR UPVOTES default***");
         arrayMerged.sort(function(a, b) {
           return b.upvote.localeCompare(a.upvote);
         });

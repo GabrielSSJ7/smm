@@ -7,7 +7,7 @@ export const actionTypes = {
   MUDA_EMAIL: "muda_email",
   MUDA_SENHA: "muda_senha",
   URL: "http://localhost:4000/",
- // URL: "https://smm-back.herokuapp.com/",
+  //URL: "https://smm-back.herokuapp.com/",
   
   CADASTRADO_SUCESSO: "CADASTRADO_SUCESSO",
   CADASTRADO_ERRO: "cadastro_erro",
@@ -18,14 +18,20 @@ export const actionTypes = {
   MUDA_NICKNAME: "muda_nickname",
   TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO",
   FETCH_SUBSCRIBED_PAGES: "fetchsubscribedpages",
+  FETCH_LIST_OF_SUBSCRIBERS: "aaaaaaaasaadadfrff",
   FETCH_PAGES_FOR_POST: "uhsaushauhs",
 
   FETCH_POSTS_SEARCH_BAR_SUCESSO: "fetchpostssearchbarsucesso",
+  FETCH_PAGES_SEARCH_BAR_SUCESSO: "FEUFHUHAUF",
+  FETCH_MEMES_SEARCH_BAR_SUCESSO: "fetchmemessearchbarsucesso",
   UP_OR_DOWN_VOTE: "upordownvote",
   FETCH_POST_COMMENTS: "fetchpostcomments",
   POST_SUCCESS:"suhdaus",
 
   UPLOAD_PROGRESS: "UPLOADFJASIJF",
+
+  SUBSCRIBE_USER_PAGE_SUCCESS: "subscribeuserpagesuccess",
+  SUBSCRIBE_USER_PAGE_ERRO: "subscribeuserpageerro",
 
   //NEW POST 
   CHANGE_NEW_POST_ID_USER_PAGE: "changeiduserpage",

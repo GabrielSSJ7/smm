@@ -1,61 +1,150 @@
+/*   background: rgb(26, 26, 27); */
+
 .post {
-    margin-bottom: 50px;
-    border: 1px solid orange;
-    padding: 20px;
+  margin-bottom: 50px;
+  /* border: 1px solid orange; */
+  padding: 20px;
+  background: rgb(26, 26, 27);
 }
 
-#post-div-updownvote button{
-    background: none;
-    border: none;
-    margin: 0 auto;
+.post-header {
+  border-bottom: 1px solid orange;
+  padding-bottom: 10px;
+  color: white !important;
 }
 
-#post-div-updownvote button:hover{
-    color: orange;
+.post-body {
+  color: white !important;
 }
 
-#post-div-updownvote p {
-    margin: 0;
-    align-self: center
+.post-div-updownvote {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-right: 10px
 }
 
-.post-footer button{
-    background: none;
-    border: none;
-    margin: 0 auto;
-    padding: 5px
+.post-div-updownvote button {
+  background: none;
+  border: none;
+  /* margin: 0 auto; */
 }
 
-.post-footer button:hover{
-    background: black;
-    color: white;
-    border-radius: 10px;
+.post-div-updownvote button:hover {
+  color: orange;
+}
+
+.post-div-updownvote p {
+  margin: 0;
+}
+
+.post-div-page-autor{ 
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.post-div-autor {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+}
+
+.post-div-autor p {
+  margin-left: 10px
+}
+
+.post-div-page{
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+}
+
+.post-div-page .post-div-circle {
+  width: 30px;
+  height: 30px;
+}
+
+.post-div-page p {
+  font-size: 10px;
 
 }
+
+.post-footer button {
+  background: none;
+  border: none;
+  margin: 0 auto;
+  padding: 5px;
+  color: white;
+}
+
+.post-footer button:hover {
+  background: white;
+  color: black;
+  border-radius: 10px;
+}
+
+/* .post-div-circle {
+  background-color: #aaa;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+} */
 
 .post-div-circle {
-    background-color: #aaa;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    overflow: hidden;
-    position: relative;
-  }
+  display: inline-block;
+  width: 50px;
+  height: 50px;
   
-  .post-div-circle img {
-    position: absolute;
-    /* bottom: 0; */
-    width: 100%;
-  }
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 50%;
+  cursor: pointer;
+}
 
-  .btn-comments-send:hover {
-      border-top-left-radius: 0px !important;
-      border-bottom-left-radius: 0px !important;
-      border-top-right-radius: 5px !important;
-      border-bottom-right-radius: 5px !important;
-  }
+.post-div-circle:hover {
+  opacity: 0.5;
+}
 
-  .input-comment {
-      border-top-right-radius: 0px !important;
-      border-bottom-right-radius: 0px !important;
-  }
+.post-div-circle img {
+  position: absolute;
+  /* bottom: 0; */
+  width: 100%;
+}
+
+.btn-upvote {
+  width: 10px !important;
+  padding: 0 !important;
+}
+
+.btn-downvote {
+  width: 10px !important;
+  padding: 0 !important;
+}
+
+.btn-comments-send:hover {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
+
+.input-comment {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.post-nick {
+  margin-left: 2%;
+  margin-top: 16;
+  margin-bottom: 0 !important;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: center;
+}
+
+.post-nick:hover {
+  font-weight: 400;
+}

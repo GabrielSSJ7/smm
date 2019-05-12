@@ -11,7 +11,7 @@ export function fetchPostsBySearchBar(key) {
         token: data ? data.token : null
       })
       .then(res => {
-        console.log(res.data);
+
         dispatch({
           type: actionTypes.FETCH_POSTS_SEARCH_BAR_SUCESSO,
           payload: res.data
@@ -23,6 +23,7 @@ export function fetchPostsBySearchBar(key) {
       });
   };
 }
+
 
 export function upOrDownVote(data) {
   const localData = JSON.parse(localStorage.getItem("data")) || null;
@@ -127,6 +128,8 @@ export function fetchPagesForPost(key) {
     instance
       .get(`${actionTypes.URL}searchPageForPost?search=${key}`)
       .then(res => {
+        console.log(res.data);
+        
         dispatch({
           type: actionTypes.FETCH_PAGES_FOR_POST,
           payload: res.data
@@ -178,10 +181,12 @@ export function toPost(file, data) {
         }
       },
       function(error) {
+        console.log(error.message)
         // A full list of error codes is available at
         // https://firebase.google.com/docs/storage/web/handle-errors
         switch (error.code) {
           case "storage/unauthorized":
+       
             // User doesn't have permission to access the object
             break;
 
@@ -197,24 +202,26 @@ export function toPost(file, data) {
       function() {
         // Upload completed successfully, now we can get the download URL
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-          dispatch({ type: actionTypes.CHANGE_NEW_POST_TRIGGER, payload: false })
-          // let route = "";
-          // if (data.isYourProfile) {
-          //   delete data.id_user_page;
-          //   delete data.isYourProfile;
-          //   route = "createpostuser";
-          // } else {
-          //   delete data.isYourProfile;
-          //   route = "createpostuserpage";
-          // }
-          // const d = { ...data, midia: downloadURL };
-          // const localData = JSON.parse(localStorage.getItem("data")) || null;
-          // const instance = axios.create({
-          //   headers: { Authorization: `bearer ${localData.token}` }
-          // });
-          // instance.post(`${actionTypes.URL}${route}`, d).then(r => {
-          //   dispatch({ type: actionTypes.POST_SUCCESS, payload: true });
-          // });
+        
+          let route = "";
+          if (data.isYourProfile) {
+            delete data.id_user_page;
+            delete data.isYourProfile;
+            route = "createpostuser";
+          } else {
+            delete data.isYourProfile;
+            route = "createpostuserpage";
+          }
+          const d = { ...data, midia: downloadURL };
+          const localData = JSON.parse(localStorage.getItem("data")) || null;
+          const instance = axios.create({
+            headers: { Authorization: `bearer ${localData.token}` }
+          });
+
+          instance.post(`${actionTypes.URL}${route}`, d).then(r => {
+            dispatch({ type: actionTypes.CHANGE_NEW_POST_TRIGGER, payload: false })
+            dispatch({ type: actionTypes.POST_SUCCESS, payload: true });
+          });
         });
       }
     );
@@ -238,7 +245,7 @@ export function changeNewPostTitle(title) {
   return { type: actionTypes.CHANGE_NEW_POST_TITLE, payload: title };
 }
 export function changeNewPostDescription(desc) {
-  return { type: actionTypes.CHANGE_NEW_POST_TITLE, payload: desc };
+  return { type: actionTypes.CHANGE_NEW_POST_DESCRIPTION, payload: desc };
 }
 export function changeNewPostKeywords(keywords) {
   return { type: actionTypes.CHANGE_NEW_POST_KEYWORDS, payload: keywords };

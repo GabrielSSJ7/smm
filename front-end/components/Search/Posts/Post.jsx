@@ -1,8 +1,10 @@
-import { Image } from "react-bootstrap";
-import ModalPost from "../components/ModalPost";
+import { Image, Row, Col, Container } from "react-bootstrap";
+import ModalPost from "./ModalPost";
+import Link from "next/link"
 
-import "../static/css/index.css";
-import "../static/css/post.css";
+import "../../../static/css/index.css";
+import "../../../static/css/post.css";
+
 
 export default class Post extends React.Component {
   constructor(props) {
@@ -19,6 +21,8 @@ export default class Post extends React.Component {
       formComments: v
     })
   }
+
+  
   componentDidMount() {
 
     this.setState({
@@ -94,33 +98,24 @@ export default class Post extends React.Component {
 
       posts.push(
         <div className="post" key={index}>
-          <div className="post-header" style={{ borderBottom: "1px solid" }}>
-            <div className="container">
-              <div className="row">
-                <div
-                  className="col-md-2"
-                  id="post-div-updownvote"
-                  style={{ display: "flex", flexDirection: "column", paddingRight: 0 }}
-                >
-                  <button className="btn-upvote" onClick={async () => this.upOrDownVote(index, 'up')} style={{ color: postsArray[index].up_on ? "orange" : "black" }}>
-                    <i className="fas fa-long-arrow-alt-up" />
-                  </button>
-                  <p>{postsArray[index].upvote}</p>
-                  <button className="btn-downvote" onClick={async () => this.upOrDownVote(index, 'u')} >
-                    <i style={{ color: postsArray[index].down_on ? "orange" : "black" }} className="fas fa-long-arrow-alt-down" />
-                  </button>
-                </div>
-                <div className="col-md-10" style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingLeft: 0 }}>
-                  <div className="post-div-circle" style={{ borderRadius: "100%" }}>
-                    <Image
-                      src={postsArray[index].foto}
-                    />
-                  </div>
+          <div className="post-header" style={{ borderBottom: "1px solid orange" }}>
+            <Container>
+              <Row >
+                <Col md={12} style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingLeft: 0 }}>
 
-                  <p style={{ marginLeft: "2%", marginTop: 16 }}>{postsArray[index].nick}</p>
-                </div>
-              </div>
-            </div>
+                  <div className="post-div-updownvote">
+                    <button className="btn-upvote" onClick={async () => this.upOrDownVote(index, 'up')} style={{ color: postsArray[index].up_on ? "orange" : "white" }}>
+                      <i className="fas fa-long-arrow-alt-up" />
+                    </button>
+                    <p>{postsArray[index].upvote}</p>
+                    <button className="btn-downvote" onClick={async () => this.upOrDownVote(index, 'u')} >
+                      <i style={{ color: postsArray[index].down_on ? "orange" : "white" }} className="fas fa-long-arrow-alt-down" />
+                    </button>
+                  </div>
+                  {this.renderPageAutorOrOnlyAutor(postsArray[index])}
+                </Col>
+              </Row>
+            </Container>
           </div>
           <div className="post-body">
             <div className="container">
@@ -129,7 +124,7 @@ export default class Post extends React.Component {
               <p>{postsArray[index].descricao}</p>
 
               <div className="row">
-                <div style={{ height: "500" }}>
+                <div style={{ width: "75%", margin: "auto" }}>
                   <Image
                     style={{
                       width: "100%",
@@ -167,17 +162,61 @@ export default class Post extends React.Component {
     return posts;
   }
 
-  renderCountComments(post){
-    if( Object.keys(this.props.comments).length == 0){
+  renderPageAutorOrOnlyAutor(element) {
+    if (element.type == 'u') {
+      return (
+        <div className="post-div-autor">
+          <Link href={`page?id=${element.id}&type=profile`} >
+            <div className="post-div-circle" style={{ backgroundImage: `url(${element.foto})` }}></div>
+          </Link>
+
+
+          <Link href={`page?id=${element.id}&type=profile`} >
+            <p className="post-nick">{element.nick}</p>
+          </Link>
+        </div>
+      )
+    } else {
+      return (
+        <div className="post-div-page-autor">
+
+          <div className="post-div-autor">
+            <Link href={`page?id=${element.id}&type=profile`} >
+              <div className="post-div-circle" style={{ backgroundImage: `url(${element.foto})` }}></div>
+            </Link>
+
+
+            <Link href={`page?id=${element.id}&type=profile`} >
+              <p className="post-nick">{element.nick}</p>
+            </Link>
+          </div>
+
+          <div className="post-div-page">
+            <Link href={`page?id=${element.page_id}&type=up`} >
+              <div className="post-div-circle" style={{ backgroundImage: `url(${element.page_midia})` }}></div>
+            </Link>
+
+
+            <Link href={`page?id=${element.page_id}&type=up`} >
+              <p className="post-nick">{element.page_name}</p>
+            </Link>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  renderCountComments(post) {
+    if (Object.keys(this.props.comments).length == 0) {
       return post.comments
     } else {
-      if(post.id == this.props.comments.id_post){
+      if (post.id == this.props.comments.id_post) {
         return this.props.comments.totalComments
       } else {
         return post.comments
       }
     }
-   
+
   }
 
   renderFormComments(post) {
@@ -206,6 +245,21 @@ export default class Post extends React.Component {
 
   render() {
 
-    return <div>{this.renderPost()} <ModalPost show={this.state.formComments} post={this.state.post} handleClose={()=>this.handleClose.bind(this)} comments={this.props.comments} insertComment={this.insertComment.bind(this)} /> </div>;
+    return <div>
+      <Col style={{ border: "1px solid lightgrey" }}>
+        <h4 style={{ fontWeight: "bold", color: "white" }}>
+          Posts e Variações:
+            </h4>
+      </Col>
+      {this.renderPost()}
+      
+      <ModalPost
+        show={this.state.formComments}
+        post={this.state.post}
+        handleClose={() => this.handleClose.bind(this)}
+        comments={this.props.comments}
+        insertComment={this.insertComment.bind(this)}
+      />
+    </div>;
   }
 }

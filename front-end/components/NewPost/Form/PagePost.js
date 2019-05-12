@@ -118,9 +118,9 @@ export default class PagePost extends React.Component {
             <div
               id="your-pic"
               className="post-div-circle"
-              style={{ borderRadius: "100%" }}
+              style={{ borderRadius: "100%", backgroundImage: `url(${this.props.localStorage.foto})` }}
             >
-              <Image src={this.props.localStorage.foto} />
+              {/* <Image src={this.props.localStorage.foto} /> */}
             </div>
             <span style={{ marginLeft: 10 }}>
               <strong>{this.props.localStorage.nick}</strong>
@@ -166,9 +166,9 @@ export default class PagePost extends React.Component {
         <div id="element-choose-page">
           <div
             className="post-div-circle-selected"
-            style={{ borderRadius: "100%" }}
+            style={{ backgroundImage: `url(${element.midia})` }}
           >
-            <Image src={element.midia} />
+            {/* <Image src={element.midia} /> */}
           </div>
           <div id="text-choose-page">
             <p>{element.nome}</p>
@@ -199,8 +199,8 @@ export default class PagePost extends React.Component {
           onClick={() => this.selectPage(element, false)}
           key={element.id}
         >
-          <div className="post-div-circle" style={{ borderRadius: "100%" }}>
-            <Image src={element.midia} />
+          <div className="post-div-circle" style={{ backgroundImage: `url(${element.midia})` }}>
+            {/* <Image src={element.midia} /> */}
           </div>
           <span style={{ marginLeft: 10 }}>{element.nome}</span>
         </div>
@@ -220,8 +220,8 @@ export default class PagePost extends React.Component {
             onClick={() => this.selectPage(element, false)}
             key={element.id}
           >
-            <div className="post-div-circle" style={{ borderRadius: "100%" }}>
-              <Image src={element.midia} />
+            <div className="post-div-circle" style={{ backgroundImage: `url(${element.midia})` }}>
+              {/* <Image src={element.midia} /> */}
             </div>
             <span style={{ marginLeft: 10 }}>{element.nome}</span>
           </div>

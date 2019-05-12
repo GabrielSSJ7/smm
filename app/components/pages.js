@@ -261,20 +261,26 @@ module.exports = app => {
   searchUserPage = (req, res) => {
     const searchWords = req.query.search_query || null;
 
+    const auth = /false/i.test(req.get("Authorization").replace("bearer ", ""));
+
+    const user = !auth
+      ? jwt.decode(req.get("Authorization").replace("bearer ", ""), authSecret)
+          .id
+      : null;
     let arrayWithWords = searchWords.split(/(?= )/);
     let a = 0;
 
-    let sqlQuery =
-      "SELECT " +
-      "user_page.id, " +
-      "user_page.nome, " +
-      "user_page.midia, " +
-      "user_page.descricao, " +
-      "usuario.nick FROM keywords " +
-      "INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id " +
-      "INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page " +
-      "INNER JOIN usuario ON usuario.id = user_page.id_criador " +
-      "WHERE keywords.keyword IN (";
+    let sqlQuery = `SELECT DISTINCT
+      user_page.id, 
+      user_page.nome, 
+      user_page.midia,
+      user_page.descricao, 
+      (select subscribe_user_page.id from subscribe_user_page where subscribe_user_page.id_user = ${user} and subscribe_user_page.id_page = user_page.id) as sub,
+	    (select count(subscribe_user_page.id_user) from subscribe_user_page where subscribe_user_page.id_page = user_page.id)  as qtde_subs,
+      usuario.nick FROM keywords 
+      INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id 
+      INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page 
+      INNER JOIN usuario ON usuario.id = user_page.id_criador  WHERE keywords.keyword IN ( `;
     while (a < arrayWithWords.length) {
       if (a == arrayWithWords.length - 1) {
         sqlQuery += `'${arrayWithWords[a]}'`;
@@ -289,35 +295,33 @@ module.exports = app => {
     app.db
       .raw(sqlQuery)
       .then(result => {
-        console.log(result.rows.length);
         if (result.rows.length == 0) {
-          let sqlQueryLike =
-            "SELECT " +
-            "user_page.id, " +
-            "user_page.nome, " +
-            "user_page.midia, " +
-            "user_page.descricao, " +
-            "usuario.nick FROM keywords " +
-            "INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id " +
-            "INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page " +
-            "INNER JOIN usuario ON usuario.id = user_page.id_criador " +
-            "WHERE keywords.keyword ";
+          let sqlQueryLike = `SELECT DISTINCT
+            user_page.id, 
+            user_page.nome, 
+            user_page.midia,
+            user_page.descricao, 
+            (select subscribe_user_page.id from subscribe_user_page where subscribe_user_page.id_user = ${user} and subscribe_user_page.id_page = user_page.id) as sub,
+            (select count(subscribe_user_page.id_user) from subscribe_user_page where subscribe_user_page.id_page = user_page.id) as qtde_subs,
+            usuario.nick FROM keywords 
+            INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id 
+            INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page 
+            INNER JOIN usuario ON usuario.id = user_page.id_criador  WHERE keywords.keyword `;
           a = 0;
           while (a < arrayWithWords.length) {
             if (a == 0) {
-              sqlQueryLike += ` ILIKE '%${arrayWithWords[a]}%'`;
+              sqlQueryLike += ` ILIKE '${arrayWithWords[a]}%'`;
             } else {
-              sqlQueryLike += `OR keywords.keyword ILIKE '%${
+              sqlQueryLike += `OR keywords.keyword ILIKE '${
                 arrayWithWords[a]
               }%'`;
             }
             a++;
           }
-          console.log(sqlQueryLike);
+
           app.db
             .raw(sqlQueryLike)
             .then(result => {
-              console.log(result.rows);
               return res.json(result.rows);
             })
             .catch(erro => {
@@ -341,17 +345,16 @@ module.exports = app => {
     let arrayWithWords = searchWords.split(/(?= )/);
     let a = 0;
 
-    let sqlQuery =
-      "SELECT " +
-      "meme_page.id, " +
-      "meme_page.nome, " +
-      "meme_page.midia, " +
-      "meme_page.descricao, " +
-      "usuario.nick FROM keywords " +
-      "INNER JOIN keywords_rel_memepage ON keywords_rel_memepage.id_keywords = keywords.id " +
-      "INNER JOIN meme_page ON meme_page.id = keywords_rel_memepage.id_meme_page " +
-      "INNER JOIN usuario ON usuario.id = meme_page.id_criador " +
-      "WHERE keywords.keyword IN (";
+    let sqlQuery = `SELECT DISTINCT 
+      meme_page.id, 
+      meme_page.nome, 
+      meme_page.midia, 
+      meme_page.descricao, 
+      usuario.nick FROM keywords 
+      INNER JOIN keywords_rel_memepage ON keywords_rel_memepage.id_keywords = keywords.id 
+      INNER JOIN meme_page ON meme_page.id = keywords_rel_memepage.id_meme_page 
+      INNER JOIN usuario ON usuario.id = meme_page.id_criador 
+      WHERE keywords.keyword IN ( `;
     while (a < arrayWithWords.length) {
       if (a == arrayWithWords.length - 1) {
         sqlQuery += `'${arrayWithWords[a]}'`;
@@ -367,17 +370,16 @@ module.exports = app => {
       .raw(sqlQuery)
       .then(result => {
         if (result.rows.length == 0) {
-          let sqlQueryLike =
-            "SELECT " +
-            "user_page.id, " +
-            "user_page.nome, " +
-            "user_page.midia, " +
-            "user_page.descricao, " +
-            "usuario.nick FROM keywords " +
-            "INNER JOIN user_page_rel_keywords ON user_page_rel_keywords.id_keywords = keywords.id " +
-            "INNER JOIN user_page ON user_page.id = user_page_rel_keywords.id_user_page " +
-            "INNER JOIN usuario ON usuario.id = user_page.id_criador " +
-            "WHERE keywords.keyword ";
+          let sqlQueryLike = ` SELECT DISTINCT
+            meme_page.id,
+            meme_page.nome,
+            meme_page.midia,
+            meme_page.descricao,
+            usuario.nick FROM keywords
+            INNER JOIN keywords_rel_memepage ON keywords.id = keywords_rel_memepage.id_keywords  
+            INNER JOIN meme_page ON meme_page.id = keywords_rel_memepage.id_meme_page
+            INNER JOIN usuario ON usuario.id = meme_page.id_criador
+            WHERE keywords.keyword `;
           a = 0;
           while (a < arrayWithWords.length) {
             if (a == 0) {
@@ -389,17 +391,19 @@ module.exports = app => {
             }
             a++;
           }
-          console.log(sqlQueryLike);
+
           app.db
             .raw(sqlQueryLike)
             .then(result => {
-              console.log(result.rows);
               return res.json(result.rows);
             })
             .catch(erro => {
               return res.send(erro);
             });
         } else {
+          console.log("====================================");
+          console.log("pages | line:412", result.rows);
+          console.log("====================================");
           return res.json(result.rows);
         }
       })
@@ -452,6 +456,10 @@ module.exports = app => {
       case "m":
         table = "subscribe_meme_page";
         break;
+
+      case "u":
+        table = "subscribe";
+        break;
     }
 
     const alreadyFollow = await app.db(table).where({
@@ -490,36 +498,50 @@ module.exports = app => {
       req.get("Authorization").replace("bearer ", ""),
       authSecret
     );
-    const result = await app.db.raw(`SELECT user_page.id, user_page.nome, user_page.midia FROM user_page 
+    const result = await app.db
+      .raw(`SELECT user_page.id, user_page.nome, user_page.midia FROM user_page 
     INNER JOIN subscribe_user_page ON user_page.id = subscribe_user_page.id_page
-    inner join usuario on subscribe_user_page.id_user = usuario.id WHERE usuario.id = ${user.id}`);
+    inner join usuario on subscribe_user_page.id_user = usuario.id WHERE usuario.id = ${
+      user.id
+    }`);
 
     return res.json(result.rows);
-  }
+  };
 
   searchPageForPost = async (req, res) => {
-    const key = req.query.search
-    const result = await app.db.raw(`SELECT DISTINCT user_page.id, user_page.nome, user_page.midia FROM user_page 
+    const key = req.query.search;
+
+    const result = await app.db
+      .raw(`SELECT DISTINCT user_page.id, user_page.nome, user_page.midia FROM user_page 
     INNER JOIN subscribe_user_page ON user_page.id = subscribe_user_page.id_page
     inner join usuario on subscribe_user_page.id_user = usuario.id 
     inner join user_page_rel_keywords ON user_page.id = user_page_rel_keywords.id_user_page
     inner join keywords ON user_page_rel_keywords.id_keywords = keywords.id
-    WHERE  keywords.keyword ilike '${key}%' OR user_page.nome ilike '${key}%'`)
-    
+    WHERE  keywords.keyword ilike '${key}%' OR user_page.nome ilike '${key}%'`);
+
     return res.json(result.rows);
-  }
+  };
 
   getAllSubscribers = async (req, res) => {
     const option = req.query.option || null;
     const id_page = req.query.id_page || null;
-    
 
     if (id_page == null || option == null) return res.sendStatus(400);
-
-    const result = await app.db
-      .raw(`SELECT usuario.nick, usuario.foto FROM subscribe_meme_page 
-    JOIN usuario ON subscribe_meme_page.id_user = usuario.id
-    WHERE id_page = ${id_page};`);
+    let result = undefined;
+    switch (option) {
+      case "up":
+         result = await app.db
+          .raw(`SELECT usuario.nick, usuario.foto FROM subscribe_user_page 
+          JOIN usuario ON subscribe_user_page.id_user = usuario.id
+          WHERE id_page = ${id_page};`);
+        break;
+      case "u":
+         result = await app.db
+          .raw(`SELECT usuario.nick, usuario.foto FROM subscribe 
+          JOIN usuario ON subscribe.id_page = usuario.id
+          WHERE id_page = ${id_page};`);
+        break;
+    }
 
     return res.json(result.rows);
   };

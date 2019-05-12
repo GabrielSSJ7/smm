@@ -62,7 +62,7 @@ export default class Inputs extends React.Component {
           />
         </div>
         <div className="row">
-          <div className="col-md-6" style={{ paddingLeft: 0 }}>
+          <div className="col-md-6 " style={{ paddingLeft: 0 }}>
             <input
               className="form-control"
               placeholder="Keywords"
@@ -72,7 +72,7 @@ export default class Inputs extends React.Component {
             />
           </div>
           <div
-            className="col-md-6"
+            className="col-md-6 div-keywords"
             style={{
               paddingRight: 0,
               display: "flex",
@@ -109,7 +109,7 @@ export default class Inputs extends React.Component {
 
       return element;
     } else {
-      return <p style={{ color: "lightgrey" }}>Nenhuma keyword escolhida</p>;
+      return <p style={{ color: "lightgrey" }}>Nenhuma keyword escolhida (Clique Enter para adicionar)</p>;
     }
   }
 

@@ -1,5 +1,50 @@
 ((window["webpackJsonp"] = window["webpackJsonp"] || []).push([["static\\development\\pages\\_app.js"],{
 
+/***/ "./config/reducers/PagesReducer.js":
+/*!*****************************************!*\
+  !*** ./config/reducers/PagesReducer.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/objectSpread */ "./node_modules/@babel/runtime-corejs2/helpers/esm/objectSpread.js");
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../types */ "./config/types.js");
+
+
+var INITIAL_STATE = {
+  pages: [],
+  memes: [],
+  followers: []
+};
+/* harmony default export */ __webpack_exports__["default"] = (function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : INITIAL_STATE;
+  var action = arguments.length > 1 ? arguments[1] : undefined;
+
+  switch (action.type) {
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_PAGES_SEARCH_BAR_SUCESSO:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        pages: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_MEMES_SEARCH_BAR_SUCESSO:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        memes: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_LIST_OF_SUBSCRIBERS:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        followers: action.payload
+      });
+
+    default:
+      return state;
+  }
+});
+
+/***/ }),
+
 /***/ "./config/reducers/PostsReducer.js":
 /*!*****************************************!*\
   !*** ./config/reducers/PostsReducer.js ***!
@@ -15,6 +60,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var INITIAL_STATE = {
   posts: [],
+  pages: [],
   vote: {},
   comments: [],
   pagesSubscribed: [],
@@ -40,6 +86,11 @@ var INITIAL_STATE = {
     case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_POSTS_SEARCH_BAR_SUCESSO:
       return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
         posts: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].FETCH_PAGES_SEARCH_BAR_SUCESSO:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        pages: action.payload
       });
 
     case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].UP_OR_DOWN_VOTE:
@@ -250,12 +301,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var redux__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! redux */ "./node_modules/redux/es/index.js");
 /* harmony import */ var _UserReducer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserReducer */ "./config/reducers/UserReducer.js");
 /* harmony import */ var _PostsReducer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./PostsReducer */ "./config/reducers/PostsReducer.js");
+/* harmony import */ var _PagesReducer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PagesReducer */ "./config/reducers/PagesReducer.js");
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(redux__WEBPACK_IMPORTED_MODULE_0__["combineReducers"])({
   UserReducer: _UserReducer__WEBPACK_IMPORTED_MODULE_1__["default"],
-  PostsReducer: _PostsReducer__WEBPACK_IMPORTED_MODULE_2__["default"]
+  PostsReducer: _PostsReducer__WEBPACK_IMPORTED_MODULE_2__["default"],
+  PagesReducer: _PagesReducer__WEBPACK_IMPORTED_MODULE_3__["default"]
 }));
 
 /***/ }),
@@ -280,7 +334,7 @@ var actionTypes = {
   MUDA_EMAIL: "muda_email",
   MUDA_SENHA: "muda_senha",
   URL: "http://localhost:4000/",
-  // URL: "https://smm-back.herokuapp.com/",
+  //URL: "https://smm-back.herokuapp.com/",
   CADASTRADO_SUCESSO: "CADASTRADO_SUCESSO",
   CADASTRADO_ERRO: "cadastro_erro",
   CADASTRO_APELIDO: "cadastro_apelido",
@@ -290,12 +344,17 @@ var actionTypes = {
   MUDA_NICKNAME: "muda_nickname",
   TEM_APELIDO_SUCESSO: "TEMAPELIDOSUCESSO",
   FETCH_SUBSCRIBED_PAGES: "fetchsubscribedpages",
+  FETCH_LIST_OF_SUBSCRIBERS: "aaaaaaaasaadadfrff",
   FETCH_PAGES_FOR_POST: "uhsaushauhs",
   FETCH_POSTS_SEARCH_BAR_SUCESSO: "fetchpostssearchbarsucesso",
+  FETCH_PAGES_SEARCH_BAR_SUCESSO: "FEUFHUHAUF",
+  FETCH_MEMES_SEARCH_BAR_SUCESSO: "fetchmemessearchbarsucesso",
   UP_OR_DOWN_VOTE: "upordownvote",
   FETCH_POST_COMMENTS: "fetchpostcomments",
   POST_SUCCESS: "suhdaus",
   UPLOAD_PROGRESS: "UPLOADFJASIJF",
+  SUBSCRIBE_USER_PAGE_SUCCESS: "subscribeuserpagesuccess",
+  SUBSCRIBE_USER_PAGE_ERRO: "subscribeuserpageerro",
   //NEW POST 
   CHANGE_NEW_POST_ID_USER_PAGE: "changeiduserpage",
   CHANGE_NEW_POST_TITLE: "changenewpostitle",

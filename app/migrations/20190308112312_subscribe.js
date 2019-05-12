@@ -10,11 +10,11 @@ exports.up = function(knex, Promise) {
         .onDelete("CASCADE")
         .onUpdate("CASCADE");
       table
-        .bigInteger("id_post")
+        .bigInteger("id_page")
         .unsigned()
         .index()
         .references("id")
-        .inTable("post_user")
+        .inTable("usuario")
         .onDelete("CASCADE")
         .onUpdate("CASCADE");
       table.timestamp("created_at").defaultTo(knex.fn.now());

@@ -1,0 +1,68 @@
+.img-choose-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 40px;
+}
+
+.page-div-circle {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  background: url(https://www.facebook.com/images/fb_icon_325x325.png);
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 50%;
+  margin-right: 15px;
+  margin-bottom: 20px;
+}
+
+ .hover {
+  cursor: pointer;
+}
+
+ .hover:hover {
+  background-color: #444;
+  opacity: 0.5;
+}
+
+.page-name {
+    color: white;
+    font-size: 13px;
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.page-name:hover {
+  font-weight: 400;
+}
+
+.page-description {
+  font-size: 11px;
+}
+
+.page-sub-button {
+    font-size: 14px;
+}
+
+.page-subs {
+  font-size: 11px
+}
+
+.page-search-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: lightgrey
+}
+
+.page-img-and-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}

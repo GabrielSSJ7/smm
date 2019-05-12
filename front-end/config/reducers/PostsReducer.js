@@ -2,6 +2,7 @@ import { actionTypes } from "./../types";
 
 const INITIAL_STATE = {
   posts: [],
+  pages: [],
   vote: {},
   comments: [],
   pagesSubscribed: [],
@@ -26,6 +27,9 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case actionTypes.FETCH_POSTS_SEARCH_BAR_SUCESSO:
       return { ...state, posts: action.payload };
+
+    case actionTypes.FETCH_PAGES_SEARCH_BAR_SUCESSO:
+      return { ...state, pages: action.payload }
 
     case actionTypes.UP_OR_DOWN_VOTE:
       return { ...state, vote: { ...action.payload[0] } };

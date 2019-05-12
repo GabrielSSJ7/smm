@@ -26,6 +26,6 @@ exports.up = function(knex, Promise) {
   };
   
   exports.down = function(knex, Promise) {
-    return knex.schema.dropTable("post_meme_page");
+    return knex.schema.dropTableIfExists("post_meme_page");
   };
   
