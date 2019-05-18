@@ -1,3 +1,4 @@
+import React from 'react'
 import { Image, Row, Col, Container } from "react-bootstrap";
 import ModalPost from "./ModalPost";
 import Link from "next/link"
@@ -13,155 +14,22 @@ export default class Post extends React.Component {
       nick: "",
       formComments: false,
       comment: "",
-      post: {}
+      post: {},
+      posts: []
     }
   }
+
   handleClose(v) {
     this.setState({
       formComments: v
     })
   }
 
-  
   componentDidMount() {
-
     this.setState({
       nick: localStorage.getItem("nick")
     });
   }
-
-  insertComment(type, id_post, comment) {
-    const data = {
-      option: 'i',
-      id_post,
-      comment,
-      type,
-      id_comment: null
-    }
-    this.props.comment(data);
-  }
-
-  upOrDownVote(index, vote) {
-
-    const post = this.props.posts[index];
-    let data = {}
-    switch (this.props.posts[index].type) {
-      case 'm':
-        data = {
-          id_post: post.id,
-          type: post.type,
-          vote
-        }
-        this.props.upOrDownVote(data);
-        break;
-
-      case 'up':
-        data = {
-          id_post: post.id,
-          type: post.type,
-          vote
-        }
-        this.props.upOrDownVote(data);
-        break;
-
-      case 'u':
-        data = {
-          id_post: post.id,
-          type: post.type,
-          vote
-        }
-        this.props.upOrDownVote(data);
-        break;
-    }
-  }
-
-
-
-  renderPost() {
-    const posts = [];
-    const postsArray = this.props.posts
-
-    if (Object.keys(this.props.vote).length > 0) {
-
-      postsArray.filter(item => {
-        if (item.id == this.props.vote.id) {
-          item.up_on = this.props.vote.up_on;
-          item.down_on = this.props.vote.down_on
-          item.upvote = this.props.vote.upvote
-        }
-      })
-      //console.log("new", newArray)
-    }
-
-
-    for (let index = 0; index < postsArray.length; index++) {
-
-      posts.push(
-        <div className="post" key={index}>
-          <div className="post-header" style={{ borderBottom: "1px solid orange" }}>
-            <Container>
-              <Row >
-                <Col md={12} style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingLeft: 0 }}>
-
-                  <div className="post-div-updownvote">
-                    <button className="btn-upvote" onClick={async () => this.upOrDownVote(index, 'up')} style={{ color: postsArray[index].up_on ? "orange" : "white" }}>
-                      <i className="fas fa-long-arrow-alt-up" />
-                    </button>
-                    <p>{postsArray[index].upvote}</p>
-                    <button className="btn-downvote" onClick={async () => this.upOrDownVote(index, 'u')} >
-                      <i style={{ color: postsArray[index].down_on ? "orange" : "white" }} className="fas fa-long-arrow-alt-down" />
-                    </button>
-                  </div>
-                  {this.renderPageAutorOrOnlyAutor(postsArray[index])}
-                </Col>
-              </Row>
-            </Container>
-          </div>
-          <div className="post-body">
-            <div className="container">
-
-              <p style={{ marginTop: "15px" }}>{postsArray[index].titulo}</p>
-              <p>{postsArray[index].descricao}</p>
-
-              <div className="row">
-                <div style={{ width: "75%", margin: "auto" }}>
-                  <Image
-                    style={{
-                      width: "100%",
-                      maxWidth: "100%",
-                      maxHeight: "100%"
-                    }}
-                    fluid
-                    src={postsArray[index].midia}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="post-footer" style={{ marginTop: 15 }}>
-            <div style={{ zIndex: "9999999" }}>
-              <button onClick={() => {
-                this.props.fetchPostComments({
-                  option: postsArray[index].type,
-                  id: postsArray[index].id
-                });
-                if (this.state.formComments) {
-                  this.setState({ formComments: false, post: {} })
-                } else {
-                  this.setState({ formComments: true, post: postsArray[index] })
-                }
-              }}>
-                <i className="fas fa-comment-alt" /> <span>{this.renderCountComments(postsArray[index])} Comments</span>
-              </button>
-            </div>
-
-          </div>
-        </div>
-      );
-    }
-    return posts;
-  }
-
   renderPageAutorOrOnlyAutor(element) {
     if (element.type == 'u') {
       return (
@@ -218,13 +86,12 @@ export default class Post extends React.Component {
     }
 
   }
-
   renderFormComments(post) {
 
     if (this.state.formComments)
       return <div style={{ display: "flex", flexDirection: "column" }}><div style={{ display: "flex", flexDirection: "row" }}>
         <input onChange={e => this.setState({ comment: e.target.value })} placeholder="Comente algo..." className="form-control input-comment" />
-        <button onClick={() => this.insertComment(post.type, post.id)} className="btn btn-default btn-comments-send"><i className="far fa-paper-plane"></i></button>
+        <button onClick={() => this.props.comment({ option: 'i', id_post: post.id, comment: this.state.comment, type: post.type, id_comment: null })} className="btn btn-default btn-comments-send"><i className="far fa-paper-plane"></i></button>
 
       </div>
         <div>
@@ -243,22 +110,152 @@ export default class Post extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps != this.props) {
+      this.setState({
+        posts: this.props.posts
+      })
+    }
+  }
+  _organizeVotes(post, vote, i) {
+    let { posts } = this.state;
+    switch(vote) {
+      case 'up':
+        if(post.up_on) {
+          posts[i].up_on = null;
+        } else {
+          posts[i].up_on = post.id;
+          posts[i].down_on = null;
+        }
+      break;
+      case 'u': 
+        if(post.down_on) {
+          posts[i].down_on = null;
+        } else {
+          posts[i].down_on = post.id;
+          posts[i].up_on = null;
+        }
+      break;
+    }
+  }
   render() {
-
+    const { posts } = this.props
     return <div>
       <Col style={{ border: "1px solid lightgrey" }}>
         <h4 style={{ fontWeight: "bold", color: "white" }}>
           Posts e Variações:
             </h4>
       </Col>
-      {this.renderPost()}
-      
+      {posts.map((post, index) => (
+        <div className="post" key={post.id} >
+        <div className="post-header" style={{ borderBottom: "1px solid orange" }}>
+            <Container>
+              <Row >
+                <Col md={12} style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingLeft: 0 }}>
+                  <div className="post-div-updownvote">
+                    <button
+                      className="btn-upvote"
+                      onClick={async () => {
+                        this.props.upOrDownVote(
+                          {
+                            id_post: post.id,
+                            type: post.type,
+                            vote: 'up'
+                          }
+                        )
+                        this._organizeVotes(post, 'up', index)
+                      }
+                      }
+                      style={{ color: post.up_on ? "orange" : "white" }}
+                    >
+                      <i className="fas fa-long-arrow-alt-up" />
+                    </button>
+                    <p>{post.upvote}</p>
+                    <button
+                      className="btn-downvote"
+                      onClick={async () => {
+                        this.props.upOrDownVote(
+                          {
+                            id_post: post.id,
+                            type: post.type,
+                            vote: 'u'
+                          }
+                        )
+                        this._organizeVotes(post, 'u', index)
+                  }
+                  }
+                >
+                      <i
+                      style={{ color: post.down_on ? "orange" : "white" }} className="fas fa-long-arrow-alt-down"
+                    />
+                    </button>
+                  </div>
+                {this.renderPageAutorOrOnlyAutor(post)}
+                </Col>
+              </Row>
+            </Container>
+        </div>
+        <div className="post-body" onClick={() => {
+          this.props.fetchPostComments({
+            option: post.type,
+            id: post.id
+          });
+          this.props.changeIndexForModal(index)
+          if (this.state.formComments) {
+            this.setState({ formComments: false, post: {} })
+          } else {
+            this.setState({ formComments: true, post })
+          }
+        }}>
+          <div className="container">
+
+            <p style={{ marginTop: "15px" }}>{post.titulo}</p>
+            <p>{post.descricao}</p>
+
+            <div className="row">
+              <div style={{ width: "75%", margin: "auto" }}>
+                <Image
+                  style={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    maxHeight: "100%"
+                  }}
+                  fluid
+                  src={post.midia}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="post-footer" style={{ marginTop: 15 }}>
+          <div style={{ zIndex: "9999999" }}>
+            <button onClick={() => {
+              this.props.fetchPostComments({
+                option: post.type,
+                id: post.id
+              });
+              this.props.changeIndexForModal(index)
+              if (this.state.formComments) {
+                this.setState({ formComments: false, post: {} })
+              } else {
+                this.setState({ formComments: true, post })
+              }
+            }}>
+              <i className="fas fa-comment-alt" /> <span>{this.renderCountComments(post)} Comments</span>
+            </button>
+          </div>
+
+        </div>
+        </div>))}
+
       <ModalPost
         show={this.state.formComments}
         post={this.state.post}
+        indexForModal={this.props.indexForModal}
         handleClose={() => this.handleClose.bind(this)}
         comments={this.props.comments}
-        insertComment={this.insertComment.bind(this)}
+        comment={this.props.comment}
+        upOrDownVote={this.props.upOrDownVote}
       />
     </div>;
   }

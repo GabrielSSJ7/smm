@@ -36,7 +36,7 @@ export function upOrDownVote(data) {
       instance
         .post(`${actionTypes.URL}updownvote`, data)
         .then(res => {
-          console.log("PostAction :: ", res.data);
+          console.log(res.data);
           dispatch({ type: actionTypes.UP_OR_DOWN_VOTE, payload: res.data });
         })
         .catch(error => {
@@ -234,6 +234,10 @@ export function changeUploadProgress(up) {
   console.log("PostActions =>", up);
   console.log('====================================');
   return {type: actionTypes.UPLOAD_PROGRESS, payload: up}
+}
+
+export function changeIndexForModal(i){
+  return { type: actionTypes.CHANGE_INDEX_FOR_MODAL, payload: i}
 }
 
 //NEW POST CHANGES

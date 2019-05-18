@@ -6,6 +6,7 @@ import {
   fetchPostsBySearchBar,
   upOrDownVote,
   comment,
+  changeIndexForModal,
   fetchPostComments
 } from "../config/actions/PostsActions";
 import {  fetchPagesBySearchBar, fetchMemeBySearchBar,subscribeUserPage, fetchListOfSubscribed } from '../config/actions/PagesActions'
@@ -54,21 +55,26 @@ class Posts extends React.Component {
           <div className="container-fluid" style={{ marginTop: "2%" }}>
             <div className="row">
               <div className="col-sm-8">
-                <Meme memes={this.props.memes}  />
-                <Pages 
-                  pages={this.props.pages}
-                  subscribeUserPage={this.props.subscribeUserPage}
-                  followers={this.props.followers}
-                  fetchListOfSubscribed={this.props.fetchListOfSubscribed}
-                  type="up"
-                />
+                
                 <Post
                   posts={this.props.posts}
                   upOrDownVote={this.props.upOrDownVote.bind(this)}
                   vote={this.props.vote}
                   comment={this.props.comment.bind(this)}
                   fetchPostComments={this.props.fetchPostComments.bind(this)}
+                  changeIndexForModal={this.props.changeIndexForModal}
+                  indexForModal={this.props.indexForModal}
                   comments={this.props.comments}
+                />
+              </div>
+              <div className="col">
+              <Meme memes={this.props.memes}  />
+                <Pages 
+                  pages={this.props.pages}
+                  subscribeUserPage={this.props.subscribeUserPage}
+                  followers={this.props.followers}
+                  fetchListOfSubscribed={this.props.fetchListOfSubscribed}
+                  type="up"
                 />
               </div>
             </div>
@@ -88,7 +94,8 @@ const mapStateToProps = state => {
     memes: state.PagesReducer.memes,
     vote: state.PostsReducer.vote,
     comments: state.PostsReducer.comments,
-    followers: state.PagesReducer.followers
+    followers: state.PagesReducer.followers,
+    indexForModal: state.PostsReducer.indexForModal
   };
 };
 
@@ -103,6 +110,7 @@ export default connect(
     comment,
     fetchPostComments,
     fetchMemeBySearchBar,
-    fetchListOfSubscribed
+    fetchListOfSubscribed,
+    changeIndexForModal
   }
 )(Posts);

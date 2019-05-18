@@ -32,6 +32,7 @@ export const actionTypes = {
 
   SUBSCRIBE_USER_PAGE_SUCCESS: "subscribeuserpagesuccess",
   SUBSCRIBE_USER_PAGE_ERRO: "subscribeuserpageerro",
+  CHANGE_INDEX_FOR_MODAL: "post/CHANCE_INDEX",
 
   //NEW POST 
   CHANGE_NEW_POST_ID_USER_PAGE: "changeiduserpage",

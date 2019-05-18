@@ -1,5 +1,7 @@
 /*   background: rgb(26, 26, 27); */
-
+.modal-dialog {
+  max-width: 1200px !important;
+}
 .post {
   margin-bottom: 50px;
   /* border: 1px solid orange; */

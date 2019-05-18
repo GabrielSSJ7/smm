@@ -24,7 +24,7 @@ export default class ModalFollowers extends React.Component {
                     <div className="post-div-circle" style={{ backgroundImage: `url(${element.foto})`, minWidth: "50px" }}></div>
                 </Link>
                 <Link href={`page?id=${element.id}&type=profile`}  >
-                    <p className="post-nick" style={{ color: "white", alignSelf: "flex-start" }}>{element.nick}</p>
+                    <p className="post-nick" style={{ color: "white", alignSelf: "center" }}>{element.nick}</p>
                 </Link>
             </div>
         });

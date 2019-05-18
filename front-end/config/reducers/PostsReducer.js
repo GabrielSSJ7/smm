@@ -8,6 +8,7 @@ const INITIAL_STATE = {
   pagesSubscribed: [],
   pagesForPost: [],
   result: null,
+  indexForModal: 0,
 
   uploadProgress: 0,
 
@@ -48,6 +49,9 @@ export default (state = INITIAL_STATE, action) => {
 
     case actionTypes.UPLOAD_PROGRESS:
       return { ...state, uploadProgress: action.payload }
+
+    case actionTypes.CHANGE_INDEX_FOR_MODAL: 
+      return { ...state, indexForModal: action.payload }
 
     //NEW POST
     case actionTypes.CHANGE_NEW_POST_ID_USER_PAGE:

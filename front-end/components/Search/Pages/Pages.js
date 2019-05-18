@@ -1,3 +1,4 @@
+import React from 'react'
 import { Container, Row, Col, Image, Button } from "react-bootstrap";
 import Link from "next/link";
 import Router from "next/router";
@@ -17,7 +18,6 @@ export default class Pages extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps != this.props) {
-      console.log(this.state.sub)
       let sub = [];
       this.props.pages.forEach((e, i) => {
         sub.push(e.sub);
@@ -83,7 +83,7 @@ export default class Pages extends React.Component {
               <p onClick={() => { 
                 this.setState({ showModalFollowers: true })
                 this.props.fetchListOfSubscribed(this.props.type, element.id)
-              }} className="page-subs">{element.qtde_subs} followers</p>
+              }} className="page-subs" style={{ cursor: "pointer"}}>{element.qtde_subs} followers</p>
 
             </div>
           </div>

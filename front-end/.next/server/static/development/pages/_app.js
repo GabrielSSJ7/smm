@@ -159,6 +159,7 @@ var INITIAL_STATE = {
   pagesSubscribed: [],
   pagesForPost: [],
   result: null,
+  indexForModal: 0,
   uploadProgress: 0,
   //NEW POST
   postStatus: false,
@@ -213,7 +214,12 @@ var INITIAL_STATE = {
 
     case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].UPLOAD_PROGRESS:
       return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
-        uploadProgress: action.payload //NEW POST
+        uploadProgress: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_INDEX_FOR_MODAL:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        indexForModal: action.payload //NEW POST
 
       });
 
@@ -449,6 +455,7 @@ var actionTypes = {
   UPLOAD_PROGRESS: "UPLOADFJASIJF",
   SUBSCRIBE_USER_PAGE_SUCCESS: "subscribeuserpagesuccess",
   SUBSCRIBE_USER_PAGE_ERRO: "subscribeuserpageerro",
+  CHANGE_INDEX_FOR_MODAL: "post/CHANCE_INDEX",
   //NEW POST 
   CHANGE_NEW_POST_ID_USER_PAGE: "changeiduserpage",
   CHANGE_NEW_POST_TITLE: "changenewpostitle",
@@ -496,7 +503,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _jsxFileName = "C:\\react\\smm\\front-end\\lib\\with-redux-store.js";
+var _jsxFileName = "/home/mastersparda/Documentos/dev/react/sauce/front-end/lib/with-redux-store.js";
 
 
 var isServer = typeof window === 'undefined';
@@ -740,55 +747,6 @@ function _assertThisInitialized(self) {
 }
 
 module.exports = _assertThisInitialized;
-
-/***/ }),
-
-/***/ "./node_modules/@babel/runtime-corejs2/helpers/asyncToGenerator.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@babel/runtime-corejs2/helpers/asyncToGenerator.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _Promise = __webpack_require__(/*! ../core-js/promise */ "./node_modules/@babel/runtime-corejs2/core-js/promise.js");
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    _Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new _Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-module.exports = _asyncToGenerator;
 
 /***/ }),
 
@@ -1389,9 +1347,7 @@ module.exports = __webpack_require__(/*! ./dist/pages/_app */ "./node_modules/ne
 
 var _interopRequireDefault = __webpack_require__(/*! @babel/runtime-corejs2/helpers/interopRequireDefault */ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js");
 
-var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/regenerator */ "./node_modules/@babel/runtime-corejs2/regenerator/index.js"));
-
-var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/helpers/asyncToGenerator */ "./node_modules/@babel/runtime-corejs2/helpers/asyncToGenerator.js"));
+var _promise = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/promise */ "./node_modules/@babel/runtime-corejs2/core-js/promise.js"));
 
 var _assign = _interopRequireDefault(__webpack_require__(/*! @babel/runtime-corejs2/core-js/object/assign */ "./node_modules/@babel/runtime-corejs2/core-js/object/assign.js"));
 
@@ -1471,39 +1427,21 @@ function (_react_1$Component) {
     }
   }], [{
     key: "getInitialProps",
-    value: function () {
-      var _getInitialProps = (0, _asyncToGenerator2.default)(
-      /*#__PURE__*/
-      _regenerator.default.mark(function _callee(_ref) {
-        var Component, router, ctx, pageProps;
-        return _regenerator.default.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                Component = _ref.Component, router = _ref.router, ctx = _ref.ctx;
-                _context.next = 3;
-                return utils_1.loadGetInitialProps(Component, ctx);
+    value: function (_ref) {
+      var Component = _ref.Component,
+          router = _ref.router,
+          ctx = _ref.ctx;
 
-              case 3:
-                pageProps = _context.sent;
-                return _context.abrupt("return", {
-                  pageProps: pageProps
-                });
-
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }));
-
-      function getInitialProps(_x) {
-        return _getInitialProps.apply(this, arguments);
+      try {
+        return _promise.default.resolve(utils_1.loadGetInitialProps(Component, ctx)).then(function (pageProps) {
+          return {
+            pageProps: pageProps
+          };
+        });
+      } catch (e) {
+        return _promise.default.reject(e);
       }
-
-      return getInitialProps;
-    }()
+    }
   }]);
   return App;
 }(react_1.Component);
@@ -1645,7 +1583,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _jsxFileName = "C:\\react\\smm\\front-end\\pages\\_app.js";
+var _jsxFileName = "/home/mastersparda/Documentos/dev/react/sauce/front-end/pages/_app.js";
 
 
 
