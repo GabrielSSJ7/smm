@@ -513,12 +513,10 @@ module.exports = app => {
 
     const result = await app.db
       .raw(`SELECT DISTINCT user_page.id, user_page.nome, user_page.midia FROM user_page 
-    INNER JOIN subscribe_user_page ON user_page.id = subscribe_user_page.id_page
-    inner join usuario on subscribe_user_page.id_user = usuario.id 
-    inner join user_page_rel_keywords ON user_page.id = user_page_rel_keywords.id_user_page
-    inner join keywords ON user_page_rel_keywords.id_keywords = keywords.id
-    WHERE  keywords.keyword ilike '${key}%' OR user_page.nome ilike '${key}%'`);
-
+      inner join user_page_rel_keywords ON user_page.id = user_page_rel_keywords.id_user_page
+      inner join keywords ON user_page_rel_keywords.id_keywords = keywords.id
+    WHERE  keywords.keyword ilike '${key}%' OR user_page.nome ilike '${key}%'`)
+    
     return res.json(result.rows);
   };
 

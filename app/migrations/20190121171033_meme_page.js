@@ -10,6 +10,7 @@ exports.up = function(knex, Promise) {
     table.text("nome").notNull();
     table.text("descricao");
     table.text("midia").notNull();
+    table.string("mediaType").notNull().defaultTo('image');
     table.integer("categorias");
     table.integer("keywords");
     table.timestamp("created_at").defaultTo(knex.fn.now());

@@ -83,6 +83,7 @@ module.exports = app => {
         titulo: data.titulo,
         descricao: data.descricao ? data.descricao : null,
         midia: data.midia,
+        mediaType: data.mediaType,
         id_criador: token.id
       })
       .then(id => {
@@ -172,6 +173,7 @@ module.exports = app => {
         titulo: data.titulo,
         descricao: data.descricao ? data.descricao : null,
         midia: data.midia,
+        mediaType: data.mediaType,
         id_criador: token.id,
         id_user_page: data.id_user_page
       })
@@ -262,6 +264,7 @@ module.exports = app => {
         titulo: data.titulo,
         descricao: data.descricao ? data.descricao : null,
         midia: data.midia,
+        mediaType: data.mediaType,
         id_criador: token.id,
         id_meme_page: data.id_meme_page
       })
@@ -417,7 +420,7 @@ module.exports = app => {
     let a = 0;
     let sqlUserPageQuery =
       `SELECT DISTINCT 
-      user_page.midia as page_midia, user_page.nome as page_name, user_page.id as page_id, 
+      user_page.midia as page_midia, user_page.nome as page_name, user_page.id as page_id, post_user_page."mediaType", 
       post_user_page.titulo, post_user_page.descricao, post_user_page.midia, post_user_page.id, post_user_page.id_user_page, 
       (SELECT up FROM vote_user_page where id_user = ${user ? user.id : null} and id_post = post_user_page.id) as up_on,
       (SELECT down FROM vote_user_page where id_user = ${user ? user.id : null} and id_post = post_user_page.id) as down_on,
@@ -445,7 +448,7 @@ module.exports = app => {
     sqlUserPageQueryWhere += ")";
 
     sqlUserPageQueryWhere +=
-      " GROUP BY post_user_page.titulo, usuario.nick, usuario.foto, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome,user_page.id  " +
+      " GROUP BY post_user_page.\"mediaType\", post_user_page.titulo, usuario.nick, usuario.foto, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome,user_page.id  " +
       orderBy;
    //console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
     await app.db
@@ -472,7 +475,7 @@ module.exports = app => {
           }
 
           sqlUserPageQueryWhere +=
-            ` OR post_user_page.titulo ILIKE '${searchWords}%' GROUP BY post_user_page.titulo, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page, usuario.nick, usuario.foto,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome, user_page.id 
+            ` OR post_user_page.titulo ILIKE '${searchWords}%' GROUP BY post_user_page."mediaType", post_user_page.titulo, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page, usuario.nick, usuario.foto,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome, user_page.id 
             ${orderBy}`;
           //console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
           await app.db
@@ -484,12 +487,12 @@ module.exports = app => {
               userPageResult = result.rows;
             })
             .catch(erro => {
-              return res.send(erro);
+              return res.status(500).send(erro);
             });
         }
       })
       .catch(erro => {
-        return res.send(erro);
+        return res.status(500).send(erro);
       });
 
     /*====*/
@@ -499,7 +502,7 @@ module.exports = app => {
 
     let sqlMemeQuery =
       `SELECT DISTINCT 
-      meme_page.midia as page_midia, meme_page.nome as page_name, meme_page.id as page_id, 
+      meme_page.midia as page_midia, meme_page.nome as page_name, meme_page.id as page_id, post_meme_page."mediaType",
       post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, post_meme_page.id_meme_page, post_meme_page.id,
       (SELECT up FROM vote_meme_page where id_user = ${user ? user.id : null} and id_post = post_meme_page.id) as up_on,
       (SELECT count(comment) as comments FROM comments_meme_page WHERE id_post = post_meme_page.id),
@@ -523,9 +526,9 @@ module.exports = app => {
     }
     sqlMemeQueryWhere += ") ";
     sqlMemeQueryWhere +=
-      ` GROUP BY  meme_page.midia, meme_page.nome, meme_page.id, post_meme_page.id_meme_page, usuario.foto, usuario.nick, post_meme_page.id,post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword,post_meme_page.created_at
+      ` GROUP BY post_meme_page."mediaType", meme_page.midia, meme_page.nome, meme_page.id, post_meme_page.id_meme_page, usuario.foto, usuario.nick, post_meme_page.id,post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword,post_meme_page.created_at
       ${orderBy}`;
-      //console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
+     // console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
     await app.db
       .raw(sqlMemeQuery + sqlMemeQueryWhere)
       .then(async result => {
@@ -549,7 +552,7 @@ module.exports = app => {
             a++;
           }
           sqlMemeQueryWhere +=
-             ` OR post_meme_page.titulo ILIKE '${searchWords}%'  GROUP BY  meme_page.midia, meme_page.nome, meme_page.id,post_meme_page.id_meme_page, post_meme_page.titulo, usuario.nick, usuario.foto, post_meme_page.id,post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword, post_meme_page.created_at 
+             ` OR post_meme_page.titulo ILIKE '${searchWords}%'  GROUP BY  post_meme_page."mediaType", meme_page.midia, meme_page.nome, meme_page.id,post_meme_page.id_meme_page, post_meme_page.titulo, usuario.nick, usuario.foto, post_meme_page.id,post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword, post_meme_page.created_at 
             ${orderBy}`;
            // console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
           await app.db
@@ -562,19 +565,22 @@ module.exports = app => {
               memePageResult = result.rows;
             })
             .catch(erro => {
-              return res.send(erro);
+              
+              return res.status(500).send(erro);
             });
         }
       })
       .catch(erro => {
-        return res.send(erro);
+
+        
+        return res.status(500).send(erro);
       });
 
     /*====*/
 
     /* USER */
     let sqlUserQuery =
-      `SELECT DISTINCT post_user.titulo, post_user.descricao, post_user.midia, post_user.id, post_user.id_criador, 
+      `SELECT DISTINCT post_user.titulo, post_user.descricao, post_user.midia, post_user.id, post_user.id_criador, post_user."mediaType",
       (SELECT up FROM vote_user where id_user = ${user ? user.id : null} and id_post = post_user.id) as up_on,
       (SELECT down FROM vote_user where id_user = ${user ? user.id : null} and id_post = post_user.id) as down_on,
       (SELECT count(comment) as comments FROM comments_user WHERE id_post = post_user.id),
@@ -600,7 +606,7 @@ module.exports = app => {
 
     sqlUserQueryWhere += ") ";
     sqlUserQueryWhere +=
-      `   GROUP BY post_user.titulo, post_user.descricao, usuario.nick, usuario.foto,post_user.midia, post_user.id, post_user.id_criador, keywords_post_user.keyword, post_user.created_at 
+      `   GROUP BY post_user."mediaType", post_user.titulo, post_user.descricao, usuario.nick, usuario.foto,post_user.midia, post_user.id, post_user.id_criador, keywords_post_user.keyword, post_user.created_at 
       ${orderBy} `;
       //console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
     await app.db
@@ -626,7 +632,7 @@ module.exports = app => {
           }
 
           sqlUserQueryWhere +=
-            ` OR post_user.titulo ILIKE '${searchWords}%' GROUP BY post_user.titulo, post_user.descricao, post_user.midia,usuario.nick, usuario.foto,post_user.id, post_user.id_criador,  keywords_post_user.keyword, post_user.created_at 
+            ` OR post_user.titulo ILIKE '${searchWords}%' GROUP BY post_user."mediaType", post_user.titulo, post_user.descricao, post_user.midia,usuario.nick, usuario.foto,post_user.id, post_user.id_criador,  keywords_post_user.keyword, post_user.created_at 
             ${orderBy}`;
          //   console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
           await app.db
@@ -638,12 +644,13 @@ module.exports = app => {
               userResult = result.rows;
             })
             .catch(erro => {
-              return res.send(erro);
+              return res.status(500).send(erro);
             });
         }
       })
       .catch(erro => {
-        return res.send(erro);
+      
+        return res.status(500).send(erro);
       });
 
     /* ------- */
