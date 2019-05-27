@@ -15,7 +15,8 @@ consign()
   .then("./components/validation.js")
   .then("./components/user.js")
   .then("./components/pages.js")
-  .then("./components/post.js")
+  .then("./components/post/post.js")
+  .then("./components/post/posts.js")
   .then("./config/routes.js")
   .into(app);
 

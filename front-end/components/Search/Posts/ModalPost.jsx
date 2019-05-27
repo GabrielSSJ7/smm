@@ -32,11 +32,32 @@ class ModalPost extends React.Component {
             })
         }
     }
+
+    renderMedia(post) {
+        const { mediaType } = post;
+    
+        if (mediaType == "image") {
+          return (
+            <div style={{ width: "75%", margin: "auto" }}>
+              <Image style={{ width: "100%", maxWidth: "100%", maxHeight: "100%" }} fluid src={post.midia} />
+            </div>
+          );
+        } else if (mediaType == "video") {
+          return (
+            <div style={{ width: "100%", margin: "auto" }}>
+              <video style={{ width: "100%" }} src={post.midia} controls />
+            </div>
+          );
+        } else {
+          return this.state.mediaError;
+        }
+      }
+
     render() {
         const { post, comments, indexForModal } = this.props
         return (
             <Modal show={this.props.show} onHide={this.props.handleClose(false)}>
-                <Modal.Body style={{ background: "rgb(26, 26, 27)" }}>
+                <Modal.Body style={{ background: "rgb(26, 26, 27)" }}>  
                     <div className="post">
                         {/* HEADER */}
                         <div className="post-header" style={{ borderBottom: "1px solid orange" }}>
@@ -113,13 +134,7 @@ class ModalPost extends React.Component {
                                 <p style={{ marginTop: "15px" }}>{post.titulo}</p>
                                 <p>{post.descricao}</p>
                                 <div className="row">
-                                    <div style={{ width: "75%", margin: "auto" }}>
-                                        <Image style={{
-                                            width: "100%",
-                                            maxWidth: "100%",
-                                            maxHeight: "100%"
-                                        }} fluid src={post.midia} />
-                                    </div>
+                                  {this.renderMedia(post)}
                                 </div>
                             </div>
                         </div>

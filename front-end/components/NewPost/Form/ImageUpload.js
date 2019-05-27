@@ -1,11 +1,15 @@
 import { Button, Image } from "react-bootstrap";
+import { Player, ControlBar, BigPlayButton } from "video-react";
+
 export default class ImageUpload extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       imagePreview: null,
-      mediaForUpload: null
+      mediaForUpload: null,
+      mediaType: "",
+      mediaError: ""
     };
   }
 
@@ -38,7 +42,7 @@ export default class ImageUpload extends React.Component {
             />
           </div>
           <div className={this.state.imagePreview ? "" : "imageUp"}>
-            <Image src={this.state.imagePreview} style={{ height: "350px" }} />
+            {this.renderMedia()}
             <i
               style={{
                 cursor: "pointer",
@@ -55,11 +59,52 @@ export default class ImageUpload extends React.Component {
     );
   }
 
+  renderMedia() {
+    if (this.state.mediaType == "image") {
+      return (
+        <Image src={this.state.imagePreview} style={{ height: "350px" }} />
+      );
+    } else if (this.state.mediaType == "video") {
+      return (
+        <>
+          <video style={{ width: "100%"}} src={this.state.imagePreview} controls />
+        </>
+      );
+    } else {
+      return this.state.mediaError;
+    }
+  }
   onChangeFile = e => {
-    this.setState({
-      imagePreview: URL.createObjectURL(e.target.files[0]),
-      mediaForUpload: e.target.files[0]
-    });
-    this.props.changeNewPostMediaUpload(e.target.files[0])
+    if (e) {
+      const { name, type } = e.target.files[0];
+      console.log(type)
+      let allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+      const indexType = type.indexOf("/");
+      const fileType = type.substring(0, indexType);
+
+      switch (fileType) {
+        case "image":
+          this.setState({
+            imagePreview: URL.createObjectURL(e.target.files[0]),
+            mediaForUpload: e.target.files[0],
+            mediaType: fileType
+          });
+          this.props.changeNewPostMediaUpload(e.target.files[0]);
+          break;
+
+        case "video":
+          this.setState({
+            imagePreview: URL.createObjectURL(e.target.files[0]),
+            mediaForUpload: e.target.files[0],
+            mediaType: fileType
+          });
+          this.props.changeNewPostMediaUpload(e.target.files[0]);
+          break;
+
+        default:
+          this.setState({ mediaError: "Formato de arquivo inválido" });
+          break;
+      }
+    }
   };
 }

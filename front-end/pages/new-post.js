@@ -67,13 +67,7 @@ class NewPostUser extends React.Component {
         isYourProfile: this.props.isYourProfile
       };
      this.props.toPost(this.props.mediaForUpload, data);
-    } 
-    //   let a = this.props.changeUploadProgress ;
-    //   for (let i=1; i<101; i++) {
-    //     setTimeout( function timer(){
-    //       a(i);
-    //     }, i*500 );
-    //   }
+    }
   }
 
   render() {

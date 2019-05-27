@@ -7,7 +7,9 @@ import {
   upOrDownVote,
   comment,
   changeIndexForModal,
-  fetchPostComments
+  fetchPostComments,
+  viewPost,
+  postDetails
 } from "../config/actions/PostsActions";
 import {  fetchPagesBySearchBar, fetchMemeBySearchBar,subscribeUserPage, fetchListOfSubscribed } from '../config/actions/PagesActions'
 import Template from "../components/Template";
@@ -57,6 +59,8 @@ class Posts extends React.Component {
               <div className="col-sm-8">
                 
                 <Post
+                  viewPost={this.props.viewPost}
+                  viewRes={this.props.viewRes}
                   posts={this.props.posts}
                   upOrDownVote={this.props.upOrDownVote.bind(this)}
                   vote={this.props.vote}
@@ -65,11 +69,14 @@ class Posts extends React.Component {
                   changeIndexForModal={this.props.changeIndexForModal}
                   indexForModal={this.props.indexForModal}
                   comments={this.props.comments}
+                  postDetails={this.props.postDetails}
+                  detailsPeriod={this.props.detailsPeriod}
                 />
               </div>
               <div className="col">
               <Meme memes={this.props.memes}  />
                 <Pages 
+                  vote={this.props.vote}
                   pages={this.props.pages}
                   subscribeUserPage={this.props.subscribeUserPage}
                   followers={this.props.followers}
@@ -86,6 +93,7 @@ class Posts extends React.Component {
 }
 
 const mapStateToProps = state => {
+  console.log("Search || periodDetails", state.PostsReducer.detailsPeriod)
   return {
     show: state.UserReducer.show,
     resultNick: state.UserReducer.resultNick,
@@ -95,7 +103,9 @@ const mapStateToProps = state => {
     vote: state.PostsReducer.vote,
     comments: state.PostsReducer.comments,
     followers: state.PagesReducer.followers,
-    indexForModal: state.PostsReducer.indexForModal
+    indexForModal: state.PostsReducer.indexForModal,
+    viewRes: state.PostsReducer.viewRes,
+    detailsPeriod: state.PostsReducer.detailsPeriod
   };
 };
 
@@ -111,6 +121,8 @@ export default connect(
     fetchPostComments,
     fetchMemeBySearchBar,
     fetchListOfSubscribed,
-    changeIndexForModal
+    changeIndexForModal,
+    viewPost,
+    postDetails
   }
 )(Posts);

@@ -9,10 +9,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@nivo/line": "^0.58.0",
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "firebase": "^5.10.0",
+    "moment": "^2.24.0",
     "next": "latest",
     "next-images": "^1.0.4",
     "react": "next",
@@ -21,7 +23,8 @@
     "react-redux": "^5.0.1",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "video-react": "^0.13.7"
   },
   "license": "ISC",
   "devDependencies": {

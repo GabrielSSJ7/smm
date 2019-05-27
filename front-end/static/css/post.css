@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-  margin-right: 10px
+  margin-right: 10px;
 }
 
 .post-div-updownvote button {
@@ -40,7 +40,7 @@
   margin: 0;
 }
 
-.post-div-page-autor{ 
+.post-div-page-autor {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -53,10 +53,10 @@
 }
 
 .post-div-autor p {
-  margin-left: 10px
+  margin-left: 10px;
 }
 
-.post-div-page{
+.post-div-page {
   display: flex;
   flex-direction: row;
   margin-left: 10px;
@@ -69,7 +69,6 @@
 
 .post-div-page p {
   font-size: 10px;
-
 }
 
 .post-footer button {
@@ -99,7 +98,7 @@
   display: inline-block;
   width: 50px;
   height: 50px;
-  
+
   background-position: 50% 50%;
   background-size: cover;
   border-radius: 50%;
@@ -149,4 +148,56 @@
 
 .post-nick:hover {
   font-weight: 400;
+}
+.statistic-icon {
+  float: right;
+  color: white;
+  margin: 0 10px;
+  opacity: 0.7;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.statistic-icon:hover {
+  opacity: 1;
+}
+
+.modal-header button {
+  color: white;
+}
+
+.modal-header button:hover {
+  color: grey;
+}
+
+g text {
+  fill: white !important;
+}
+
+.div-details-order {
+  display: flex;
+  flex-direction: column;
+}
+
+.span-detail-order-option {
+  padding: 10px;
+  border: 1px solid;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.span-detail-order-option:hover {
+  font-size: 101%;
+  color: darkgrey
+}
+
+.span-detail-active {
+  background: rgba(27, 158, 119, 0.5);
+  font-weight: bold;
+  transition: 0.4s
+}
+
+.span-detail-active:hover {
+  background: rgba(27, 158, 119, 0.7);
 }

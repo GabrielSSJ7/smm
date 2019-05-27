@@ -160,6 +160,10 @@ var INITIAL_STATE = {
   pagesForPost: [],
   result: null,
   indexForModal: 0,
+  viewRes: "",
+  postDetails: [],
+  detailsPeriod: "week",
+  error: null,
   uploadProgress: 0,
   //NEW POST
   postStatus: false,
@@ -219,7 +223,32 @@ var INITIAL_STATE = {
 
     case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_INDEX_FOR_MODAL:
       return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
-        indexForModal: action.payload //NEW POST
+        indexForModal: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].POST_DETAILS_SUCCESS:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        postDetails: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].POST_DETAILS_ERROR:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        error: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].CHANGE_DETAILS_PERIOD:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        detailsPeriod: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].VIEW_POST_SUCCES:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        viewRes: action.payload
+      });
+
+    case _types__WEBPACK_IMPORTED_MODULE_1__["actionTypes"].VIEW_POST_ERROR:
+      return Object(_babel_runtime_corejs2_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, state, {
+        viewRes: action.payload //NEW POST
 
       });
 
@@ -433,8 +462,8 @@ var actionTypes = {
   MUDA_NOME: "muda_nome",
   MUDA_EMAIL: "muda_email",
   MUDA_SENHA: "muda_senha",
-  URL: "http://localhost:4000/",
-  //URL: "https://smm-back.herokuapp.com/",
+  //URL: "http://localhost:4000/",
+  URL: "https://smm-back.herokuapp.com/",
   CADASTRADO_SUCESSO: "CADASTRADO_SUCESSO",
   CADASTRADO_ERRO: "cadastro_erro",
   CADASTRO_APELIDO: "cadastro_apelido",
@@ -456,6 +485,11 @@ var actionTypes = {
   SUBSCRIBE_USER_PAGE_SUCCESS: "subscribeuserpagesuccess",
   SUBSCRIBE_USER_PAGE_ERRO: "subscribeuserpageerro",
   CHANGE_INDEX_FOR_MODAL: "post/CHANCE_INDEX",
+  VIEW_POST_SUCCES: "viewpostsucces",
+  VIEW_POST_ERROR: "viewposterror",
+  POST_DETAILS_SUCCESS: "postdetailssuccess",
+  POST_DETAILS_ERROR: "postdetailserror",
+  CHANGE_DETAILS_PERIOD: "changedetailsperiod",
   //NEW POST 
   CHANGE_NEW_POST_ID_USER_PAGE: "changeiduserpage",
   CHANGE_NEW_POST_TITLE: "changenewpostitle",

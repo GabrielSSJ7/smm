@@ -6,8 +6,8 @@ export const actionTypes = {
   MUDA_NOME: "muda_nome",
   MUDA_EMAIL: "muda_email",
   MUDA_SENHA: "muda_senha",
-  URL: "http://localhost:4000/",
-  //URL: "https://smm-back.herokuapp.com/",
+  //URL: "http://localhost:4000/",
+  URL: "https://smm-back.herokuapp.com/",
   
   CADASTRADO_SUCESSO: "CADASTRADO_SUCESSO",
   CADASTRADO_ERRO: "cadastro_erro",
@@ -33,6 +33,12 @@ export const actionTypes = {
   SUBSCRIBE_USER_PAGE_SUCCESS: "subscribeuserpagesuccess",
   SUBSCRIBE_USER_PAGE_ERRO: "subscribeuserpageerro",
   CHANGE_INDEX_FOR_MODAL: "post/CHANCE_INDEX",
+
+  VIEW_POST_SUCCES: "viewpostsucces",
+  VIEW_POST_ERROR: "viewposterror",
+  POST_DETAILS_SUCCESS: "postdetailssuccess",
+  POST_DETAILS_ERROR: "postdetailserror",
+  CHANGE_DETAILS_PERIOD: "changedetailsperiod",
 
   //NEW POST 
   CHANGE_NEW_POST_ID_USER_PAGE: "changeiduserpage",

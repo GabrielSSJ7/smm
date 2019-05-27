@@ -426,6 +426,7 @@ module.exports = app => {
       (SELECT down FROM vote_user_page where id_user = ${user ? user.id : null} and id_post = post_user_page.id) as down_on,
       (SELECT count(comment) as comments FROM comments_user_page WHERE id_post = post_user_page.id),
       (SELECT count(up) FROM vote_user_page where id_post = post_user_page.id) as upvote,
+      (SELECT count(view_user_page.id) as view FROM view_user_page WHERE id_post = post_user_page.id) as view,
       post_user_page.created_at, usuario.nick, usuario.foto FROM post_user_page   
       full JOIN user_page ON post_user_page.id_user_page = user_page.id 
       full JOIN comments_user_page ON post_user_page.id = comments_user_page.id_post 
@@ -494,12 +495,12 @@ module.exports = app => {
       .catch(erro => {
         return res.status(500).send(erro);
       });
-
+      
     /*====*/
 
     /* MEME PAGE */
     let memePageResult = [];
-
+  
     let sqlMemeQuery =
       `SELECT DISTINCT 
       meme_page.midia as page_midia, meme_page.nome as page_name, meme_page.id as page_id, post_meme_page."mediaType",
@@ -508,6 +509,7 @@ module.exports = app => {
       (SELECT count(comment) as comments FROM comments_meme_page WHERE id_post = post_meme_page.id),
       (SELECT down FROM vote_meme_page where id_user = ${user ? user.id : null} and id_post = post_meme_page.id) as down_on,
       (SELECT count(up) FROM vote_meme_page where id_post = post_meme_page.id) as upvote,
+      (SELECT count(view_meme_page.id) as view FROM view_meme_page WHERE id_post = post_meme_page.id) as view,
       post_meme_page.created_at,usuario.nick, usuario.foto FROM post_meme_page  
       full JOIN meme_page ON post_meme_page.id_meme_page = meme_page.id  
       full JOIN comments_meme_page ON post_meme_page.id = comments_meme_page.id_post 
@@ -585,6 +587,7 @@ module.exports = app => {
       (SELECT down FROM vote_user where id_user = ${user ? user.id : null} and id_post = post_user.id) as down_on,
       (SELECT count(comment) as comments FROM comments_user WHERE id_post = post_user.id),
       (SELECT count(up) FROM vote_user where id_post = post_user.id) as upvote,
+      (SELECT count(view_user.id) as view FROM view_user WHERE id_post = post_user.id) as view,
       post_user.created_at,usuario.nick, usuario.foto FROM post_user 
       full JOIN usuario ON post_user.id_criador = usuario.id 
       full JOIN comments_user ON post_user.id = comments_user.id_post
@@ -982,8 +985,6 @@ module.exports = app => {
         break;
 
       }
-
-      
       const countR = await app.db.raw(tableCount);
       const result = await app.db.raw(table);
       const finalResult  = { totalComments: countR.rows[0].count, id_post, dataComments: result.rows }
@@ -1075,28 +1076,43 @@ module.exports = app => {
 
   const postDetails = async (req, res) => {
     const id_post = req.query.id_post || null;
-
+    const type = req.query.type || null;
+    
     let response = {};
-    const resultPost = await app.db("post_meme_page ")
+    let table = "";
+    switch(type) {
+      case "u":
+        table = "user"
+        break;
+      case "up":
+        table = "user_page"
+        break;
+      case "m":
+        table = "meme_page"
+        break;
+    }
+
+    console.log("post:table", table)
+    const resultPost = await app.db(`post_${table}`)
       .where({ id: id_post })
       .select("created_at", "titulo", "midia");
 
     const resultCat = await app.db
       .select("categoria")
-      .from("categorias_post_meme_page")
+      .from(`categorias_post_${table}`)
       .where({ id_post });
 
     const resultVote = await app
-      .db("vote_meme_page")
+      .db(`vote_${table}`)
       .count("up as upvotes")
       .count("down as downvote")
       .where({ id_post });
 
     const resultView = await app
-      .db("view_meme_page")
+      .db(`view_${table}`)
       .count("id as views")
       .where({ id_post });
-
+      console.log(resultCat[0])
       response = resultPost;
       response = { ...response[0], ...resultVote[0], ...resultView[0], ...resultCat[0] }
       return res.json(response);

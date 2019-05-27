@@ -10,6 +10,10 @@ const INITIAL_STATE = {
   result: null,
   indexForModal: 0,
 
+  viewRes: "",
+  postDetails: [],
+  detailsPeriod: "week",
+  error: null,
   uploadProgress: 0,
 
   //NEW POST
@@ -52,6 +56,20 @@ export default (state = INITIAL_STATE, action) => {
 
     case actionTypes.CHANGE_INDEX_FOR_MODAL: 
       return { ...state, indexForModal: action.payload }
+    
+    case actionTypes.POST_DETAILS_SUCCESS:
+      return { ...state, postDetails: action.payload }
+    
+    case actionTypes.POST_DETAILS_ERROR:
+        return { ...state, error: action.payload }
+
+    case actionTypes.CHANGE_DETAILS_PERIOD:
+        return { ...state, detailsPeriod: action.payload}
+
+    case actionTypes.VIEW_POST_SUCCES:
+      return { ...state, viewRes: action.payload }
+    case actionTypes.VIEW_POST_ERROR:
+      return { ...state, viewRes: action.payload}
 
     //NEW POST
     case actionTypes.CHANGE_NEW_POST_ID_USER_PAGE:

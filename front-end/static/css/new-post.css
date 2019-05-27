@@ -289,3 +289,8 @@ overflow: auto;
   color: white;
   cursor: pointer
 }
+
+
+.controles {
+  display: none;
+}

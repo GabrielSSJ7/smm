@@ -1,6 +1,7 @@
 import axios from "axios";
 import { actionTypes } from "../types";
 import * as firebase from "firebase";
+import Axios from "axios";
 
 export function fetchPostsBySearchBar(key) {
   const data = JSON.parse(localStorage.getItem("data")) || null;
@@ -11,7 +12,7 @@ export function fetchPostsBySearchBar(key) {
         token: data ? data.token : null
       })
       .then(res => {
-
+        
         dispatch({
           type: actionTypes.FETCH_POSTS_SEARCH_BAR_SUCESSO,
           payload: res.data
@@ -89,7 +90,7 @@ export function fetchPostComments(data) {
         }`
       )
       .then(res => {
-        console.log(res.data);
+        
         dispatch({ type: actionTypes.FETCH_POST_COMMENTS, payload: res.data });
       })
       .catch(_ => {
@@ -202,7 +203,8 @@ export function toPost(file, data) {
       function() {
         // Upload completed successfully, now we can get the download URL
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-        
+          const indexType = file.type.indexOf("/");
+          const fileType = file.type.substring(0, indexType);
           let route = "";
           if (data.isYourProfile) {
             delete data.id_user_page;
@@ -212,7 +214,7 @@ export function toPost(file, data) {
             delete data.isYourProfile;
             route = "createpostuserpage";
           }
-          const d = { ...data, midia: downloadURL };
+          const d = { ...data, midia: downloadURL, mediaType: fileType };
           const localData = JSON.parse(localStorage.getItem("data")) || null;
           const instance = axios.create({
             headers: { Authorization: `bearer ${localData.token}` }
@@ -226,6 +228,42 @@ export function toPost(file, data) {
       }
     );
   };
+}
+
+export function viewPost(id, type) {
+  const token = JSON.parse(localStorage.getItem('data')).token;
+  const instance = axios.create({
+    headers: { Authorization: `bearer ${token}` }
+  });
+
+  return dispatch => {
+    instance.post(`${actionTypes.URL}view?option=${type}`, { id_post: id })
+    .then(res => {
+      dispatch({ type: actionTypes.VIEW_POST_SUCCESS, payload: res.data });
+    })
+    .catch(error => {
+      dispatch({ type: actionTypes.VIEW_POST_ERROR, payload: error })
+    })
+  }
+}
+
+export function postDetails(id,type, period) {
+  console.log("PostsActions || type ", type);
+  
+  return dispatch => {
+    axios.get(`${actionTypes.URL}postdetails?id_post=${id}&type=${type}&period=${period}`)
+    .then(res => {
+      //console.log("PostsActions => line:254", res.data);
+      dispatch({ type: actionTypes.POST_DETAILS_SUCCESS, payload: res.data });
+    })
+    .catch(error => {
+      dispatch({ type: actionTypes.POST_DETAILS_ERROR, payload: error });
+    })
+  }
+}
+
+export function changeDetailsPeriod(p){
+  return { type: actionTypes.CHANGE_DETAILS_PERIOD, payload: p }
 }
 
 //CHANGES
