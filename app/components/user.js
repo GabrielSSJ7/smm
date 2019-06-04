@@ -28,24 +28,26 @@ module.exports = app => {
       return res.status(400).send(msg);
     }
 
-    const rEmail = await app.db('usuario').where({ email: user.email });
+    const rEmail = await app.db("usuario").where({ email: user.email });
 
-    if(rEmail.length > 0) return res.status(400).send("Este e-mail já está sendo usado.");
+    if (rEmail.length > 0)
+      return res.status(400).send("Este e-mail já está sendo usado.");
 
-    user.password = encryptPassword(user.password); 
-
-    app
-      .db("usuario")
-      .insert(user)
-      .then(_ => res.status(200).send(true))
-      .catch(err => {
-        console.log(err);
-        return res.status(500).send(err);
-      });
+    user.password = encryptPassword(user.password);
+    setTimeout(function() {
+      app
+        .db("usuario")
+        .insert(user)
+        .then(_ => res.status(200).send(true))
+        .catch(err => {
+          console.log(err);
+          return res.status(500).send(err);
+        });
+    }, 10000);
   };
 
   const login = async (req, res) => {
-    console.log(req.body)
+    console.log(req.body);
     if (!req.body.email || !req.body.password) {
       return res.status(400).send("Informe usuário e senha!");
     }
@@ -86,9 +88,8 @@ module.exports = app => {
   };
 
   const signinWithFacebook = async (req, res) => {
-
     const user = { ...req.body, password: "facebook" };
-    console.log(user)
+    console.log(user);
 
     try {
       existsOrError(user.nome, "Nome não informado.");
@@ -105,7 +106,7 @@ module.exports = app => {
 
     // if already logged in other time
     if (userDB) {
-      console.log("already logged in other time")
+      console.log("already logged in other time");
       const now = Math.floor(Date.now() / 1000);
 
       const payload = {
@@ -161,7 +162,7 @@ module.exports = app => {
         nick: user
       })
       .then(nick => {
-        console.log(nick.length)
+        console.log(nick.length);
         if (nick.length > 0) {
           return res.status(200).send("Apelido já está sendo usado");
         } else {

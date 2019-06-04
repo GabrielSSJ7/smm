@@ -2,20 +2,10 @@ const bcrypt = require("bcrypt-nodejs");
 const { authSecret } = require("../.env");
 const jwt = require("jwt-simple");
 const fs = require("fs");
-const path = './components/categorias.json';
+const path = "./components/categorias.json";
 
 module.exports = app => {
-  const {
-    existsOrError,
-    notExistsOrError,
-    equalsOrError,
-    validateEmail
-  } = app.components.validation;
-
-  const encryptPassword = password => {
-    const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt);
-  };
+  const { existsOrError } = app.components.validation;
 
   /* QUERIES FOR MEME PAGE 
   -- BUSCANDO PÁGINAS DE MEMES PELA KEYWORDS --
@@ -137,10 +127,13 @@ module.exports = app => {
    */
   createPostUserPage = async (req, res) => {
     const data = req.body || null;
-    const token = jwt.decode(req.get("Authorization").replace("bearer ", ""), authSecret);
+    const token = jwt.decode(
+      req.get("Authorization").replace("bearer ", ""),
+      authSecret
+    );
 
     let arrayWithWords = data.titulo.match(/\S+/g);
-    
+
     let id_post = 0;
 
     data.keywords = data.keywords.concat(arrayWithWords);
@@ -396,10 +389,11 @@ module.exports = app => {
 
     const token = req.body.token || null;
     let user = null;
-    if(token != null) { user = jwt.decode(token, authSecret);}
+    if (token != null) {
+      user = jwt.decode(token, authSecret);
+    }
 
     let arrayWithWords = searchWords.split(/(?= )/);
-    
 
     switch (order) {
       case "upvote":
@@ -418,12 +412,15 @@ module.exports = app => {
     /* USER PAGE */
     let userPageResult = [];
     let a = 0;
-    let sqlUserPageQuery =
-      `SELECT DISTINCT 
+    let sqlUserPageQuery = `SELECT DISTINCT 
       user_page.midia as page_midia, user_page.nome as page_name, user_page.id as page_id, post_user_page."mediaType", 
       post_user_page.titulo, post_user_page.descricao, post_user_page.midia, post_user_page.id, post_user_page.id_user_page, 
-      (SELECT up FROM vote_user_page where id_user = ${user ? user.id : null} and id_post = post_user_page.id) as up_on,
-      (SELECT down FROM vote_user_page where id_user = ${user ? user.id : null} and id_post = post_user_page.id) as down_on,
+      (SELECT up FROM vote_user_page where id_user = ${
+        user ? user.id : null
+      } and id_post = post_user_page.id) as up_on,
+      (SELECT down FROM vote_user_page where id_user = ${
+        user ? user.id : null
+      } and id_post = post_user_page.id) as down_on,
       (SELECT count(comment) as comments FROM comments_user_page WHERE id_post = post_user_page.id),
       (SELECT count(up) FROM vote_user_page where id_post = post_user_page.id) as upvote,
       (SELECT count(view_user_page.id) as view FROM view_user_page WHERE id_post = post_user_page.id) as view,
@@ -449,9 +446,9 @@ module.exports = app => {
     sqlUserPageQueryWhere += ")";
 
     sqlUserPageQueryWhere +=
-      " GROUP BY post_user_page.\"mediaType\", post_user_page.titulo, usuario.nick, usuario.foto, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome,user_page.id  " +
+      ' GROUP BY post_user_page."mediaType", post_user_page.titulo, usuario.nick, usuario.foto, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome,user_page.id  ' +
       orderBy;
-   //console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
+    //console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
     await app.db
       .raw(sqlUserPageQuery + sqlUserPageQueryWhere)
       .then(async result => {
@@ -475,8 +472,7 @@ module.exports = app => {
             a++;
           }
 
-          sqlUserPageQueryWhere +=
-            ` OR post_user_page.titulo ILIKE '${searchWords}%' GROUP BY post_user_page."mediaType", post_user_page.titulo, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page, usuario.nick, usuario.foto,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome, user_page.id 
+          sqlUserPageQueryWhere += ` OR post_user_page.titulo ILIKE '${searchWords}%' GROUP BY post_user_page."mediaType", post_user_page.titulo, post_user_page.descricao, post_user_page.id, post_user_page.id_user_page, usuario.nick, usuario.foto,post_user_page.midia, keywords_post_user_page.keyword, post_user_page.created_at, user_page.nome, user_page.id 
             ${orderBy}`;
           //console.log("searchBar:UserPage => ", `${sqlUserPageQuery}${sqlUserPageQueryWhere}`);
           await app.db
@@ -495,19 +491,22 @@ module.exports = app => {
       .catch(erro => {
         return res.status(500).send(erro);
       });
-      
+
     /*====*/
 
     /* MEME PAGE */
     let memePageResult = [];
-  
-    let sqlMemeQuery =
-      `SELECT DISTINCT 
+
+    let sqlMemeQuery = `SELECT DISTINCT 
       meme_page.midia as page_midia, meme_page.nome as page_name, meme_page.id as page_id, post_meme_page."mediaType",
       post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, post_meme_page.id_meme_page, post_meme_page.id,
-      (SELECT up FROM vote_meme_page where id_user = ${user ? user.id : null} and id_post = post_meme_page.id) as up_on,
+      (SELECT up FROM vote_meme_page where id_user = ${
+        user ? user.id : null
+      } and id_post = post_meme_page.id) as up_on,
       (SELECT count(comment) as comments FROM comments_meme_page WHERE id_post = post_meme_page.id),
-      (SELECT down FROM vote_meme_page where id_user = ${user ? user.id : null} and id_post = post_meme_page.id) as down_on,
+      (SELECT down FROM vote_meme_page where id_user = ${
+        user ? user.id : null
+      } and id_post = post_meme_page.id) as down_on,
       (SELECT count(up) FROM vote_meme_page where id_post = post_meme_page.id) as upvote,
       (SELECT count(view_meme_page.id) as view FROM view_meme_page WHERE id_post = post_meme_page.id) as view,
       post_meme_page.created_at,usuario.nick, usuario.foto FROM post_meme_page  
@@ -527,10 +526,9 @@ module.exports = app => {
       a++;
     }
     sqlMemeQueryWhere += ") ";
-    sqlMemeQueryWhere +=
-      ` GROUP BY post_meme_page."mediaType", meme_page.midia, meme_page.nome, meme_page.id, post_meme_page.id_meme_page, usuario.foto, usuario.nick, post_meme_page.id,post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword,post_meme_page.created_at
+    sqlMemeQueryWhere += ` GROUP BY post_meme_page."mediaType", meme_page.midia, meme_page.nome, meme_page.id, post_meme_page.id_meme_page, usuario.foto, usuario.nick, post_meme_page.id,post_meme_page.titulo, post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword,post_meme_page.created_at
       ${orderBy}`;
-     // console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
+    // console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
     await app.db
       .raw(sqlMemeQuery + sqlMemeQueryWhere)
       .then(async result => {
@@ -553,10 +551,9 @@ module.exports = app => {
             }
             a++;
           }
-          sqlMemeQueryWhere +=
-             ` OR post_meme_page.titulo ILIKE '${searchWords}%'  GROUP BY  post_meme_page."mediaType", meme_page.midia, meme_page.nome, meme_page.id,post_meme_page.id_meme_page, post_meme_page.titulo, usuario.nick, usuario.foto, post_meme_page.id,post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword, post_meme_page.created_at 
+          sqlMemeQueryWhere += ` OR post_meme_page.titulo ILIKE '${searchWords}%'  GROUP BY  post_meme_page."mediaType", meme_page.midia, meme_page.nome, meme_page.id,post_meme_page.id_meme_page, post_meme_page.titulo, usuario.nick, usuario.foto, post_meme_page.id,post_meme_page.descricao, post_meme_page.midia, keywords_post_meme_page.keyword, post_meme_page.created_at 
             ${orderBy}`;
-           // console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
+          // console.log("searchBar:MemePage => ", `${sqlMemeQuery}${sqlMemeQueryWhere}`);
           await app.db
             .raw(sqlMemeQuery + sqlMemeQueryWhere)
             .then(result => {
@@ -567,24 +564,24 @@ module.exports = app => {
               memePageResult = result.rows;
             })
             .catch(erro => {
-              
               return res.status(500).send(erro);
             });
         }
       })
       .catch(erro => {
-
-        
         return res.status(500).send(erro);
       });
 
     /*====*/
 
     /* USER */
-    let sqlUserQuery =
-      `SELECT DISTINCT post_user.titulo, post_user.descricao, post_user.midia, post_user.id, post_user.id_criador, post_user."mediaType",
-      (SELECT up FROM vote_user where id_user = ${user ? user.id : null} and id_post = post_user.id) as up_on,
-      (SELECT down FROM vote_user where id_user = ${user ? user.id : null} and id_post = post_user.id) as down_on,
+    let sqlUserQuery = `SELECT DISTINCT post_user.titulo, post_user.descricao, post_user.midia, post_user.id, post_user.id_criador, post_user."mediaType",
+      (SELECT up FROM vote_user where id_user = ${
+        user ? user.id : null
+      } and id_post = post_user.id) as up_on,
+      (SELECT down FROM vote_user where id_user = ${
+        user ? user.id : null
+      } and id_post = post_user.id) as down_on,
       (SELECT count(comment) as comments FROM comments_user WHERE id_post = post_user.id),
       (SELECT count(up) FROM vote_user where id_post = post_user.id) as upvote,
       (SELECT count(view_user.id) as view FROM view_user WHERE id_post = post_user.id) as view,
@@ -592,7 +589,7 @@ module.exports = app => {
       full JOIN usuario ON post_user.id_criador = usuario.id 
       full JOIN comments_user ON post_user.id = comments_user.id_post
       full JOIN keywords_post_user ON post_user.id = keywords_post_user.id_post 
-      full JOIN vote_user ON post_user.id = vote_user.id_post `
+      full JOIN vote_user ON post_user.id = vote_user.id_post `;
     let userResult = [];
 
     a = 0;
@@ -608,10 +605,9 @@ module.exports = app => {
     }
 
     sqlUserQueryWhere += ") ";
-    sqlUserQueryWhere +=
-      `   GROUP BY post_user."mediaType", post_user.titulo, post_user.descricao, usuario.nick, usuario.foto,post_user.midia, post_user.id, post_user.id_criador, keywords_post_user.keyword, post_user.created_at 
+    sqlUserQueryWhere += `   GROUP BY post_user."mediaType", post_user.titulo, post_user.descricao, usuario.nick, usuario.foto,post_user.midia, post_user.id, post_user.id_criador, keywords_post_user.keyword, post_user.created_at 
       ${orderBy} `;
-      //console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
+    //console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
     await app.db
       .raw(sqlUserQuery + sqlUserQueryWhere)
       .then(async result => {
@@ -634,10 +630,9 @@ module.exports = app => {
             a++;
           }
 
-          sqlUserQueryWhere +=
-            ` OR post_user.titulo ILIKE '${searchWords}%' GROUP BY post_user."mediaType", post_user.titulo, post_user.descricao, post_user.midia,usuario.nick, usuario.foto,post_user.id, post_user.id_criador,  keywords_post_user.keyword, post_user.created_at 
+          sqlUserQueryWhere += ` OR post_user.titulo ILIKE '${searchWords}%' GROUP BY post_user."mediaType", post_user.titulo, post_user.descricao, post_user.midia,usuario.nick, usuario.foto,post_user.id, post_user.id_criador,  keywords_post_user.keyword, post_user.created_at 
             ${orderBy}`;
-         //   console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
+          //   console.log("searchBar:UserPage => ", `${sqlUserQuery}${sqlUserQueryWhere}`);
           await app.db
             .raw(sqlUserQuery + sqlUserQueryWhere)
             .then(result => {
@@ -652,7 +647,6 @@ module.exports = app => {
         }
       })
       .catch(erro => {
-      
         return res.status(500).send(erro);
       });
 
@@ -723,31 +717,35 @@ module.exports = app => {
   };
 
   async function refreshPostAfterVote(table, token, post_id) {
-    let postTable = '';
-    switch(table) {
+    let postTable = "";
+    switch (table) {
       case "vote_meme_page":
         postTable = "post_meme_page";
-      break
-      
+        break;
+
       case "vote_user_page":
         postTable = "post_user_page";
-      break;
+        break;
 
       case "vote_user":
         postTable = "post_user";
-      break
+        break;
     }
-    const sql = `SELECT DISTINCT (SELECT up FROM ${table} where id_user = ${token.id} and id_post =  ${postTable}.id) as up_on,
-    (SELECT down FROM ${table} where id_user = ${token.id} and id_post =  ${postTable}.id) as down_on,
+    const sql = `SELECT DISTINCT (SELECT up FROM ${table} where id_user = ${
+      token.id
+    } and id_post =  ${postTable}.id) as up_on,
+    (SELECT down FROM ${table} where id_user = ${
+      token.id
+    } and id_post =  ${postTable}.id) as down_on,
     count(up) as upvote, count(down) as downvote, ${postTable}.id
     FROM ${postTable} full JOIN ${table} ON  ${postTable}.id = ${table}.id_post 
     WHERE ${postTable}.id = ${post_id}
     GROUP BY ${postTable}.id`;
-   //console.log(sql);
+    //console.log(sql);
     const result = await app.db.raw(sql);
 
     console.log("refreshPostAfterVote => ", result.rows);
-    return result.rows
+    return result.rows;
   }
 
   const doUpOrDown = async (table, data, res, token) => {
@@ -764,22 +762,29 @@ module.exports = app => {
             .where({ id_user: token.id, id_post: data.id_post })
             .update({ up: null })
             .then(async _ => {
-             
-              const json = await refreshPostAfterVote(table, token, data.id_post);
-              return res.json( json);
+              const json = await refreshPostAfterVote(
+                table,
+                token,
+                data.id_post
+              );
+              return res.json(json);
             })
             .catch(error => {
               return res.status(500).send(error);
             });
         } else {
           console.log("able up, disable down");
-         app
+          app
             .db(table)
             .where({ id_user: token.id, id_post: data.id_post })
             .update({ up: 1, down: null })
             .then(async _ => {
-              const json = await refreshPostAfterVote(table, token, data.id_post);
-              return res.json( json);
+              const json = await refreshPostAfterVote(
+                table,
+                token,
+                data.id_post
+              );
+              return res.json(json);
             })
             .catch(error => {
               return res.status(500).send(error);
@@ -793,7 +798,11 @@ module.exports = app => {
             .where({ id_user: token.id, id_post: data.id_post })
             .update({ down: null })
             .then(async _ => {
-              const json = await refreshPostAfterVote(table, token, data.id_post);
+              const json = await refreshPostAfterVote(
+                table,
+                token,
+                data.id_post
+              );
               return res.json(json);
             })
             .catch(error => {
@@ -806,8 +815,12 @@ module.exports = app => {
             .where({ id_user: token.id, id_post: data.id_post })
             .update({ down: 1, up: null })
             .then(async _ => {
-              const json = await refreshPostAfterVote(table, token, data.id_post);
-              return res.json( json);
+              const json = await refreshPostAfterVote(
+                table,
+                token,
+                data.id_post
+              );
+              return res.json(json);
             })
             .catch(error => {
               return res.status(500).send(error);
@@ -827,7 +840,7 @@ module.exports = app => {
           })
           .then(async _ => {
             const json = await refreshPostAfterVote(table, token, data.id_post);
-            return res.json( json);
+            return res.json(json);
           })
           .catch(error => {
             return res.status(500).send(error);
@@ -844,7 +857,7 @@ module.exports = app => {
           })
           .then(async _ => {
             const json = await refreshPostAfterVote(table, token, data.id_post);
-            return res.json( json);
+            return res.json(json);
           })
           .catch(error => {
             return res.status(500).send(error);
@@ -916,7 +929,7 @@ module.exports = app => {
         comment: data.comment
       })
       .then(async _ => {
-        const result =  await selectComments(data.id_post, data.type);
+        const result = await selectComments(data.id_post, data.type);
         return res.json(result);
       })
       .catch(error => {
@@ -950,48 +963,50 @@ module.exports = app => {
         return res.status(500).send(error);
       });
   };
-  
 
   const fetchComments = async (req, res) => {
-    const option = req.query.option ||  null;
+    const option = req.query.option || null;
     const id_post = req.query.id_post || null;
-  
+
     const result = await selectComments(id_post, option);
 
     return res.json(result);
-   }
+  };
 
-   const selectComments = async (id_post, option) => {
-      let table = '';
-      let tableCount = '';
-      switch(option) {
-        case 'up':
-        table = `SELECT count(comments_user_page.id) as count, id_user, comment, nick, foto, comments_user_page.created_at FROM comments_user_page JOIN usuario ON comments_user_page.id_user= usuario.id WHERE id_post = ${id_post} group by id_user,comment, comments_user_page.* ,nick, foto, comments_user_page.created_at order by comments_user_page ASC`
+  const selectComments = async (id_post, option) => {
+    let table = "";
+    let tableCount = "";
+    switch (option) {
+      case "up":
+        table = `SELECT count(comments_user_page.id) as count, id_user, comment, nick, foto, comments_user_page.created_at FROM comments_user_page JOIN usuario ON comments_user_page.id_user= usuario.id WHERE id_post = ${id_post} group by id_user,comment, comments_user_page.* ,nick, foto, comments_user_page.created_at order by comments_user_page ASC`;
 
-        tableCount = `SELECT count(comments_user_page.id) as count FROM comments_user_page WHERE id_post = ${id_post}`
+        tableCount = `SELECT count(comments_user_page.id) as count FROM comments_user_page WHERE id_post = ${id_post}`;
         break;
 
-        case 'u':
-        table = `SELECT count(comments_user.id) as count,id_user, comment, nick, foto, comments_user.created_at FROM comments_user JOIN usuario ON comments_user.id_user= usuario.id WHERE id_post = ${id_post} group by id_user,comment,  nick, foto, comments_user.*,comments_user.created_at order by comments_user ASC`
+      case "u":
+        table = `SELECT count(comments_user.id) as count,id_user, comment, nick, foto, comments_user.created_at FROM comments_user JOIN usuario ON comments_user.id_user= usuario.id WHERE id_post = ${id_post} group by id_user,comment,  nick, foto, comments_user.*,comments_user.created_at order by comments_user ASC`;
 
-        tableCount = `SELECT count(comments_user.id) as count FROM comments_user WHERE id_post = ${id_post}`
+        tableCount = `SELECT count(comments_user.id) as count FROM comments_user WHERE id_post = ${id_post}`;
         break;
 
-        case 'm':
+      case "m":
         table = `SELECT count(comments_meme_page.id) as count, id_user, comment, nick, foto, comments_meme_page.created_at FROM comments_meme_page JOIN usuario ON comments_meme_page.id_user= usuario.id WHERE id_post  = ${id_post} group by id_user,comment, comments_meme_page.*, nick, foto, comments_meme_page.created_at
-        order by comments_meme_page ASC`
+        order by comments_meme_page ASC`;
 
-        tableCount = `SELECT count(comments_meme_page.id) as count FROM comments_meme_page WHERE id_post = ${id_post}`
+        tableCount = `SELECT count(comments_meme_page.id) as count FROM comments_meme_page WHERE id_post = ${id_post}`;
         break;
+    }
+    const countR = await app.db.raw(tableCount);
+    const result = await app.db.raw(table);
+    const finalResult = {
+      totalComments: countR.rows[0].count,
+      id_post,
+      dataComments: result.rows
+    };
+    console.log(finalResult);
+    return finalResult;
+  };
 
-      }
-      const countR = await app.db.raw(tableCount);
-      const result = await app.db.raw(table);
-      const finalResult  = { totalComments: countR.rows[0].count, id_post, dataComments: result.rows }
-      console.log(finalResult)
-      return finalResult
-   }
- 
   /*
    *
    * VIEW POST
@@ -1077,23 +1092,24 @@ module.exports = app => {
   const postDetails = async (req, res) => {
     const id_post = req.query.id_post || null;
     const type = req.query.type || null;
-    
+
     let response = {};
     let table = "";
-    switch(type) {
+    switch (type) {
       case "u":
-        table = "user"
+        table = "user";
         break;
       case "up":
-        table = "user_page"
+        table = "user_page";
         break;
       case "m":
-        table = "meme_page"
+        table = "meme_page";
         break;
     }
 
-    console.log("post:table", table)
-    const resultPost = await app.db(`post_${table}`)
+    console.log("post:table", table);
+    const resultPost = await app
+      .db(`post_${table}`)
       .where({ id: id_post })
       .select("created_at", "titulo", "midia");
 
@@ -1112,18 +1128,23 @@ module.exports = app => {
       .db(`view_${table}`)
       .count("id as views")
       .where({ id_post });
-      console.log(resultCat[0])
-      response = resultPost;
-      response = { ...response[0], ...resultVote[0], ...resultView[0], ...resultCat[0] }
-      return res.json(response);
+    console.log(resultCat[0]);
+    response = resultPost;
+    response = {
+      ...response[0],
+      ...resultVote[0],
+      ...resultView[0],
+      ...resultCat[0]
+    };
+    return res.json(response);
   };
 
   const loadCats = (req, res) => {
-    const fileBuffer = fs.readFileSync(path, 'utf-8');
-    const json = JSON.parse(fileBuffer)
+    const fileBuffer = fs.readFileSync(path, "utf-8");
+    const json = JSON.parse(fileBuffer);
 
     return res.json(json);
-  }
+  };
 
   return {
     searchByPage,
